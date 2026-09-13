@@ -206,6 +206,17 @@ body { font-family: 'Space Grotesk', sans-serif; }
 .menu-carousel img.carousel-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.6s ease; }
 .menu-carousel img.carousel-img.active { opacity: 1; }
 
+/* QR idle C — pop/tilt/glitch + border flicker */
+.qr-card { will-change: transform, box-shadow, border-color; }
+.qr-card.qr-pop { animation: qrPop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes qrPop { 0%{transform:scale(1)} 50%{transform:scale(1.03)} 100%{transform:scale(1)} }
+.qr-card.qr-tilt { animation: qrTilt 0.32s ease; }
+@keyframes qrTilt { 0%{transform:rotate(0)} 25%{transform:rotate(-1.2deg)} 75%{transform:rotate(1.2deg)} 100%{transform:rotate(0)} }
+.qr-card.qr-glitch { animation: qrGlitch 0.32s steps(1); }
+@keyframes qrGlitch { 0%{transform:translate(0,0); filter:none} 20%{transform:translate(-2px,1px); filter:brightness(1.05)} 40%{transform:translate(2px,-1px)} 60%{transform:translate(-1px,2px)} 80%{transform:translate(1px,-1px)} 100%{transform:translate(0,0)} }
+.qr-card.qr-border { animation: qrBorder 0.4s steps(1); }
+@keyframes qrBorder { 0%{border-color:#111; box-shadow:8px 8px 0 #111} 33%{border-color:#FF4D8D; box-shadow:8px 8px 0 #FF4D8D} 66%{border-color:#22C55E; box-shadow:8px 8px 0 #22C55E} 100%{border-color:#111; box-shadow:8px 8px 0 #111} }
+
 /* selfie preview */
 #selfiePreview img { border: 3px solid #111; box-shadow: 4px 4px 0px #111; }
 
@@ -217,8 +228,12 @@ body:not(.loaded) #home { opacity: 0; transform: translateY(12px); }
 body.loaded #home { opacity: 1; transform: none; transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
 body.loaded #heroHeadline { animation: heroEntrance 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
 @keyframes heroEntrance { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: none; } }
-/* ghost loader - From Uiverse.io by BlackisPlay - 5 warna random */
+/* ghost loader + landing wandering */
 #ghost { position: relative; scale: 0.8; --ghost: #FF4D8D; }
+#ghost.landing-ghost { position: absolute; scale: 0.5; opacity: 1; pointer-events: none; z-index: 1; transition: left 1.2s ease, top 1.2s ease, transform 0.25s ease; will-change: left, top, transform; }
+#ghost.landing-ghost.facing-right { scale: -0.5 0.5; }
+#home .max-w-6xl { position: relative; z-index: 2; }
+#heroGrid { z-index: 0; }
 #red { animation: upNDown infinite 0.5s; position: relative; width: 140px; height: 140px; display: grid; grid-template-columns: repeat(14, 1fr); grid-template-rows: repeat(14, 1fr); grid-column-gap: 0px; grid-row-gap: 0px; grid-template-areas: "a1 a2 a3 a4 a5 top0 top0 top0 top0 a10 a11 a12 a13 a14" "b1 b2 b3 top1 top1 top1 top1 top1 top1 top1 top1 b12 b13 b14" "c1 c2 top2 top2 top2 top2 top2 top2 top2 top2 top2 top2 c13 c14" "d1 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 d14" "e1 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 e14" "f1 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 top3 f14" "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4" "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4" "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4" "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4" "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4" "top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4 top4" "st0 st0 an4 st1 an7 st2 an10 an10 st3 an13 st4 an16 st5 st5" "an1 an2 an3 an5 an6 an8 an9 an9 an11 an12 an14 an15 an17 an18"; }
 @keyframes upNDown { 0%,49%{transform:translateY(0px)} 50%,100%{transform:translateY(-10px)} }
 #top0,#top1,#top2,#top3,#top4,#st0,#st1,#st2,#st3,#st4,#st5{ background-color: var(--ghost); }

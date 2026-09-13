@@ -1,4 +1,4 @@
-// loader 3s + ghost 5 warna random (hijau biru tua pink kuning merah)
+// loader 3s + ghost 5 warna random
 (function(){
   const loader = document.getElementById('loader');
   const ghost = document.getElementById('ghost');
@@ -20,11 +20,77 @@
     setTimeout(()=>{
       loader.classList.add('hide');
       document.body.classList.add('loaded');
-      setTimeout(()=> loader.remove(), 700);
+      // pindah ghost ke landing background biar jalan-jalan
+      setTimeout(()=>{
+        const ghostEl = document.getElementById('ghost');
+        const home = document.getElementById('home');
+        if(ghostEl && home){
+          ghostEl.classList.add('landing-ghost');
+          ghostEl.style.left = '10%';
+          ghostEl.style.top = '20%';
+          home.appendChild(ghostEl);
+          // wandering random 1.2-3.2s + nengok arah kanan/kiri
+          if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+            let lastX = parseFloat(ghostEl.style.left) || 0;
+            let lastTime = 0;
+            function wander(){
+              const now = Date.now();
+              const delay = 1200 + Math.random()*1800; // 1.2-3.0s random tiap pindah
+              const dur = (0.9 + Math.random()*0.9).toFixed(2); // 0.9-1.8s durasi gerak random
+              ghostEl.style.transition = `left ${dur}s ease, top ${dur}s ease, transform 0.25s ease`;
+              const rect = home.getBoundingClientRect();
+              const gw = ghostEl.offsetWidth || 140;
+              const gh = ghostEl.offsetHeight || 140;
+              const maxX = Math.max(0, rect.width - gw - 20);
+              const maxY = Math.max(0, rect.height - gh - 20);
+              const x = Math.random()*maxX;
+              const y = Math.random()*maxY;
+              // nengok kanan kalau gerak ke kanan, kiri kalau ke kiri
+              if(x > lastX) ghostEl.classList.add('facing-right');
+              else ghostEl.classList.remove('facing-right');
+              lastX = x;
+              ghostEl.style.left = x+'px';
+              ghostEl.style.top = y+'px';
+              setTimeout(wander, delay);
+            }
+            setTimeout(wander, 900);
+          }
+        }
+        loader.remove();
+      }, 700);
     }, wait);
   }
   if(document.readyState === 'complete') done();
   else window.addEventListener('load', done);
+})();
+// QR idle C — desktop only (hidden di mobile), random 2-4s
+(function initQrIdle(){
+  function start(){
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    const qrCards = document.querySelectorAll('.qr-card');
+    console.log('qr idle init', qrCards.length, 'desktop', isDesktop, 'reduce', window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if(!qrCards.length || !isDesktop || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const anims = ['qr-pop','qr-tilt','qr-glitch','qr-border'];
+    qrCards.forEach((card, idx)=>{
+      let lastAnim = '';
+      function schedule(){
+        const delay = 2000 + Math.random()*2000;
+        setTimeout(()=>{
+          let a; do{ a = anims[Math.floor(Math.random()*anims.length)]; }while(a===lastAnim);
+          lastAnim = a;
+          console.log('qr idle', idx, a);
+          card.classList.remove('qr-pop','qr-tilt','qr-glitch','qr-border');
+          void card.offsetWidth;
+          card.classList.add(a);
+          setTimeout(()=> card.classList.remove(a), 450);
+          schedule();
+        }, delay);
+      }
+      setTimeout(schedule, 800 + idx*700);
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwTNe5gMxd6XgXLpVpCmupC9CfnqwjTao5vhPgpUS47HS7j_d4j9gyOwbRX2xQbzXNt/exec";
 const menuFallback = [
