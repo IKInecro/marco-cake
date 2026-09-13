@@ -125,26 +125,18 @@ if(hero && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
 }
 
 
-// selfie handling — mobile fix: label trigger + 5MB + HEIC guard
+// selfie handling — input absolute opacity-0 cover label, no JS trigger needed
 const selfieInput = document.getElementById("selfieInput");
 const selfiePreview = document.getElementById("selfiePreview");
 const selfieImg = document.getElementById("selfieImg");
 const selfieLabel = document.getElementById("selfieLabel");
-const selfieWrap = document.querySelector('label[for="selfieInput"]');
-if(selfieWrap && selfieInput){
-  selfieWrap.addEventListener('click', (e)=>{
-    // ponytail: ensure hidden input still opens on iOS
-    if(e.target.closest('button')) return;
-    e.preventDefault();
-    selfieInput.click();
-  });
-}
 if(selfieInput){
   selfieInput.addEventListener("change", ()=>{
     const f = selfieInput.files[0];
     if(!f) return;
-    if(!f.type.startsWith('image/')){ alert("File harus gambar"); selfieInput.value=""; return; }
-    if(f.size > 5*1024*1024){ alert("Foto max 5MB — foto HP biasanya 2-3MB, coba lagi"); selfieInput.value=""; return; }
+    // some Android gallery returns empty type, skip strict check if size ok
+    if(f.type && !f.type.startsWith('image/')){ alert("File harus gambar"); selfieInput.value=""; return; }
+    if(f.size > 5*1024*1024){ alert("Foto max 5MB — coba foto lain"); selfieInput.value=""; return; }
     const r = new FileReader();
     r.onerror = ()=> alert("Gagal baca foto");
     r.onload = ()=>{
