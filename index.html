@@ -315,11 +315,19 @@
         </div>
         <div>
           <p class="font-mono text-xs font-bold">FOTO SELFIE <span class="font-normal opacity-60">(opsional)</span></p>
-          <label for="selfieInput" class="relative block border-[3px] border-dashed border-gray-950 bg-gray-50 p-3 cursor-pointer hover:bg-yellow-50 transition-colors">
-            <span id="selfieLabel" class="font-mono text-xs relative z-10 pointer-events-none">Klik untuk foto selfie</span>
-            <span class="block font-mono text-[11px] text-gray-500 mt-1 relative z-10 pointer-events-none">JPEG/PNG max 10MB — tap untuk kamera/galeri</span>
-            <input id="selfieInput" type="file" accept="image/*" capture="user" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <label for="selfieInput" class="relative block border-[3px] border-dashed border-gray-950 bg-gray-50 p-3 cursor-pointer hover:bg-yellow-50 transition-colors text-center">
+              <span class="font-mono text-xs font-bold relative z-10 pointer-events-none">🖼️ Galeri</span>
+              <span class="block font-mono text-[11px] text-gray-500 mt-1 relative z-10 pointer-events-none">Pilih foto</span>
+              <input id="selfieInput" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+            </label>
+            <label for="selfieCameraInput" class="relative block border-[3px] border-dashed border-gray-950 bg-gray-50 p-3 cursor-pointer hover:bg-yellow-50 transition-colors text-center">
+              <span class="font-mono text-xs font-bold relative z-10 pointer-events-none">📷 Kamera</span>
+              <span class="block font-mono text-[11px] text-gray-500 mt-1 relative z-10 pointer-events-none">Buka kamera</span>
+              <input id="selfieCameraInput" type="file" accept="image/*" capture="user" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+            </label>
+          </div>
+          <p id="selfieLabel" class="font-mono text-xs text-gray-600 mt-2 hidden"></p>
           <div id="selfiePreview" class="mt-2 hidden">
             <img id="selfieImg" class="w-24 h-24 object-cover" alt="preview selfie">
             <button type="button" onclick="clearSelfie()" class="neo-btn bg-white font-mono text-xs px-3 py-1 mt-2">HAPUS FOTO</button>

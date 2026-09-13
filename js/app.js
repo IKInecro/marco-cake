@@ -125,37 +125,37 @@ if(hero && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
 }
 
 
-// selfie handling — input absolute opacity-0 cover label, no JS trigger needed
+// selfie handling — dual input galeri + kamera
 const selfieInput = document.getElementById("selfieInput");
+const selfieCameraInput = document.getElementById("selfieCameraInput");
 const selfiePreview = document.getElementById("selfiePreview");
 const selfieImg = document.getElementById("selfieImg");
 const selfieLabel = document.getElementById("selfieLabel");
-if(selfieInput){
-  selfieInput.addEventListener("change", ()=>{
-    const f = selfieInput.files[0];
-    console.log('selfie change', f && {name:f.name, type:f.type, size:f.size});
-    if(!f) return;
-    if(f.size > 10*1024*1024){ alert("Foto max 10MB — foto kamu "+(f.size/1024/1024).toFixed(1)+"MB, coba compress"); selfieInput.value=""; return; }
-    // allow empty type (some galleries) — try read anyway
-    const r = new FileReader();
-    r.onerror = ()=>{ console.error('FileReader error', r.error); alert("Gagal baca foto"); };
-    r.onload = ()=>{
-      console.log('selfie loaded', r.result.slice(0,30));
-      selfieData = r.result;
-      selfieImg.src = selfieData;
-      selfiePreview.classList.remove("hidden");
-      selfieLabel.textContent = f.name.length>24 ? f.name.slice(0,24)+"…" : f.name;
-    };
-    r.readAsDataURL(f);
-  });
-  // iOS fallback: ensure tap not blocked by label z-index
-  selfieInput.addEventListener('click', (e)=> e.stopPropagation());
+function handleSelfieFile(input){
+  const f = input.files[0];
+  console.log('selfie change', f && {name:f.name, type:f.type, size:f.size, id:input.id});
+  if(!f) return;
+  if(f.size > 10*1024*1024){ alert("Foto max 10MB — foto kamu "+(f.size/1024/1024).toFixed(1)+"MB, coba compress"); input.value=""; return; }
+  const r = new FileReader();
+  r.onerror = ()=>{ console.error('FileReader error', r.error); alert("Gagal baca foto"); };
+  r.onload = ()=>{
+    console.log('selfie loaded', r.result.slice(0,30));
+    selfieData = r.result;
+    selfieImg.src = selfieData;
+    selfiePreview.classList.remove("hidden");
+    selfieLabel.textContent = "📷 "+(f.name.length>20 ? f.name.slice(0,20)+"…" : f.name);
+    selfieLabel.classList.remove("hidden");
+  };
+  r.readAsDataURL(f);
 }
+if(selfieInput) selfieInput.addEventListener("change", ()=> handleSelfieFile(selfieInput));
+if(selfieCameraInput) selfieCameraInput.addEventListener("change", ()=> handleSelfieFile(selfieCameraInput));
 window.clearSelfie = ()=>{
   selfieData = "";
   if(selfieInput) selfieInput.value = "";
+  if(selfieCameraInput) selfieCameraInput.value = "";
   if(selfiePreview) selfiePreview.classList.add("hidden");
-  if(selfieLabel) selfieLabel.textContent = "Klik untuk foto selfie";
+  if(selfieLabel){ selfieLabel.textContent = ""; selfieLabel.classList.add("hidden"); }
 };
 
 async function loadMenu(){
