@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MARCO CAKE — Order</title>
+  <meta name="description" content="MARCO CAKE order via QR, tunggu di Lobby MNC University">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            grotesk: ['Space Grotesk','sans-serif'],
+            mono: ['JetBrains Mono','monospace'],
+            oswald: ['Oswald','sans-serif'],
+          },
+          colors: {
+            'neo-yellow': '#FACC15',
+            'neo-pink': '#FF4D8D',
+            'neo-blue': '#0038FF',
+            'neo-green': '#22C55E',
+            'neo-orange': '#FF5500',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css?v=loader">
+</head>
+<body class="bg-[#FAFAFA] text-gray-900 antialiased pb-20">
+  <div id="loader" class="fixed inset-0 z-[100] bg-[#FAFAFA] flex flex-col items-center justify-center gap-6">
+    <div id="ghost">
+      <div id="red">
+        <div id="pupil"></div>
+        <div id="pupil1"></div>
+        <div id="eye"></div>
+        <div id="eye1"></div>
+        <div id="top0"></div>
+        <div id="top1"></div>
+        <div id="top2"></div>
+        <div id="top3"></div>
+        <div id="top4"></div>
+        <div id="st0"></div>
+        <div id="st1"></div>
+        <div id="st2"></div>
+        <div id="st3"></div>
+        <div id="st4"></div>
+        <div id="st5"></div>
+        <div id="an1"></div>
+        <div id="an2"></div>
+        <div id="an3"></div>
+        <div id="an4"></div>
+        <div id="an5"></div>
+        <div id="an6"></div>
+        <div id="an7"></div>
+        <div id="an8"></div>
+        <div id="an9"></div>
+        <div id="an10"></div>
+        <div id="an11"></div>
+        <div id="an12"></div>
+        <div id="an13"></div>
+        <div id="an14"></div>
+        <div id="an15"></div>
+        <div id="an16"></div>
+        <div id="an17"></div>
+        <div id="an18"></div>
+      </div>
+      <div id="shadow"></div>
+    </div>
+    <p class="font-mono text-xs font-bold tracking-[0.2em] text-gray-950">MARCO CAKE // LOADING</p>
+  </div>
+
+  <div id="brutalStickyNav" class="fixed top-0 left-0 right-0 z-50 bg-transparent px-4 md:px-8 py-4 md:py-5 flex justify-between items-center pointer-events-none gap-4">
+    <span class="bg-gray-950 text-white px-4 md:px-5 py-2.5 md:py-3 font-mono text-sm md:text-base font-bold tracking-wider pointer-events-auto leading-none">
+      MARCO CAKE <span class="hidden sm:inline opacity-60">// ORDER</span>
+      <span class="block sm:hidden text-[10px] tracking-[0.2em] opacity-70">MNC UNIVERSITY</span>
+    </span>
+    <div class="flex items-center gap-2 md:gap-3 pointer-events-auto">
+      <span class="hidden md:inline-flex bg-neo-yellow font-mono text-xs font-bold px-3 py-2 border-[3px] border-gray-950 shadow-[3px_3px_0px_#111]">LOBBY MNC UNIVERSITY</span>
+      <button type="button" id="brutalHamburger" aria-label="Toggle navigation" aria-expanded="false" class="neo-btn bg-white w-11 h-11 md:w-12 md:h-12 flex flex-col items-center justify-center gap-1.5 hover:bg-neo-yellow relative overflow-hidden shrink-0">
+        <span class="hamburger-line w-6 h-0.5 bg-gray-950 transition-all duration-200"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-gray-950 transition-all duration-200"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-gray-950 transition-all duration-200"></span>
+      </button>
+    </div>
+  </div>
+  <div id="brutalNavMenu" class="hidden fixed top-[72px] md:top-[84px] right-4 md:right-8 w-72 bg-white border-[3px] border-gray-950 shadow-[8px_8px_0px_#111] z-50 p-4">
+    <nav class="flex flex-col gap-2 font-mono text-sm font-bold">
+      <a href="#home" class="neo-btn bg-white px-4 py-2.5 hover:bg-neo-yellow text-center">HOME</a>
+      <a href="#menu" class="neo-btn bg-white px-4 py-2.5 hover:bg-neo-pink hover:text-white text-center">MENU</a>
+      <button onclick="openRequest()" class="neo-btn bg-neo-yellow px-4 py-2.5 hover:bg-yellow-300 text-center">REQUEST</button>
+      <button onclick="openContact()" class="neo-btn bg-white px-4 py-2.5 hover:bg-neo-blue hover:text-white text-center">KONTAK</button>
+      <button onclick="openDrawer()" class="neo-btn bg-gray-950 text-white px-4 py-2.5 text-center">KERANJANG</button>
+    </nav>
+    <p class="font-mono text-[11px] text-gray-500 text-center mt-3">Tunggu di Lobby MNC University</p>
+  </div>
+
+  <section id="home" class="min-h-[105dvh] md:min-h-screen flex items-center px-4 md:px-8 pt-20 pb-8 md:pb-12 relative overflow-hidden">
+    <div id="heroGrid" class="absolute inset-0 opacity-[0.03] pointer-events-none will-change-transform" style="background-image: linear-gradient(#111 1px, transparent 1px), linear-gradient(90deg, #111 1px, transparent 1px); background-size: 20px 20px;"></div>
+    <div id="heroShape1" class="parallax-shape absolute w-20 h-20 bg-neo-yellow border-[3px] border-gray-950 shadow-[4px_4px_0px_#111] -rotate-6 hidden md:block will-change-transform" style="top:22%; left:6%;"></div>
+    <div id="heroShape2" class="parallax-shape absolute w-14 h-14 bg-neo-pink border-[3px] border-gray-950 rounded-full shadow-[4px_4px_0px_#111] will-change-transform" style="top:18%; right:8%;"></div>
+    <div id="heroShape3" class="parallax-shape absolute w-12 h-12 bg-neo-green border-[3px] border-gray-950 shadow-[4px_4px_0px_#111] rotate-12 md:hidden will-change-transform" style="bottom:18%; left:8%;"></div>
+    <div class="max-w-6xl mx-auto relative w-full">
+      <!-- mobile gedean stack, desktop center 1.5x -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
+        <div class="md:col-span-12 order-1 md:text-center">
+          <h1 id="heroHeadline" class="font-oswald text-[20vw] sm:text-[18vw] md:text-[11rem] lg:text-[13.5rem] font-bold uppercase leading-[0.78] md:leading-[0.8] tracking-tighter brutal-headline will-change-transform md:mx-auto">
+            <span class="relative inline-block">
+              <span class="glitch-outline absolute inset-0 translate-x-[5px] md:translate-x-[8px] translate-y-[5px] md:translate-y-[8px] text-transparent select-none pointer-events-none" style="-webkit-text-stroke: 2.5px #111; paint-order: stroke fill;" aria-hidden="true">MARCO CAKE</span>
+              <span class="glitch-text relative" data-text="MARCO CAKE">MARC<span class="relative inline-block">O<img src="topi.webp" alt="" class="topi-hat" width="108" height="108" loading="eager"></span> <span class="cake-word">CAKE</span></span>
+            </span>
+            <span class="block h-[6px] md:h-[10px] w-24 md:w-32 bg-gray-950 mt-3 md:mt-5 headline-underline md:mx-auto"></span>
+          </h1>
+          <p class="font-mono text-[15px] text-gray-800 mt-4 max-w-xl leading-relaxed md:hidden">
+            Pre-Order hari ini, booth on <span class="font-bold">LOBBY MNC UNIVERSITY</span>
+          </p>
+        </div>
+        <div class="hidden md:block md:col-span-4 order-2 mt-2 md:mt-0">
+          <div class="neo-card p-5 md:p-5">
+            <p class="font-mono text-xs font-bold mb-3 tracking-widest">LANGKAH</p>
+            <ol class="font-mono text-[15px] md:text-sm space-y-2.5 md:space-y-2 list-decimal pl-5">
+              <li>Pilih kue</li>
+              <li>Buka keranjang</li>
+              <li>Isi nama dan WA</li>
+              <li>Foto selfie opsional</li>
+              <li>Tunggu di lobby</li>
+            </ol>
+            <a href="#menu" class="hidden md:block neo-btn bg-gray-950 text-white font-mono text-sm font-bold w-full text-center py-3 mt-5">LIHAT MENU</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="#menu" class="md:hidden absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5" aria-label="Scroll ke menu">
+      <span class="font-mono text-[10px] font-bold tracking-widest text-gray-500">SCROLL</span>
+      <span class="w-9 h-9 bg-white border-[3px] border-gray-950 flex items-center justify-center shadow-[3px_3px_0px_#111] animate-scroll-bounce">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#111" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 5 4-5"/></svg>
+      </span>
+    </a>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="menu" class="bg-white px-4 md:px-8 py-10 md:py-14 relative">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-8">
+        <div class="inline-flex items-center gap-2 bg-gray-950 text-white px-3 py-1.5 border-[3px] border-gray-950 shadow-[4px_4px_0px_#111]">
+          <span class="font-mono text-xs font-bold tracking-[0.2em]">MENU</span>
+          <span class="w-1.5 h-1.5 bg-neo-yellow border border-white"></span>
+          <span class="font-mono text-xs font-bold">3 PILIHAN</span>
+        </div>
+        <h2 class="font-oswald text-4xl md:text-5xl font-bold uppercase mt-3 tracking-tighter leading-none">Pilih Kue<span class="text-neo-pink">.</span></h2>
+        <div class="h-[5px] w-20 bg-gray-950 mt-2"></div>
+        <p class="font-mono text-xs text-gray-600 mt-3">Tap <span class="bg-neo-yellow px-1.5 py-0.5 border-[2px] border-gray-950 font-bold shadow-[2px_2px_0px_#111]">MAU INI!!</span> → pilih rasa & topping</p>
+      </div>
+      <div id="menuGrid" class="menu-grid">
+        <div class="neo-card p-6 font-mono text-sm">Memuat menu</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <footer class="px-4 md:px-8 py-8 bg-white">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-3 font-mono text-xs text-gray-500 items-start md:items-center">
+      <span>2026 MARCO CAKE — Lobby MNC University</span>
+      <div class="flex gap-2">
+        <button onclick="openRequest()" class="neo-btn bg-neo-yellow font-mono text-xs font-bold px-4 py-2">REQUEST</button>
+        <button onclick="openContact()" class="neo-btn bg-white font-mono text-xs font-bold px-4 py-2">KONTAK</button>
+      </div>
+    </div>
+  </footer>
+
+  <div id="requestModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
+    <div class="modal-box neo-card bg-white w-full max-w-lg max-h-[90vh] overflow-auto p-0">
+      <div class="flex justify-between items-center p-4 border-b-[3px] border-gray-950 bg-white sticky top-0">
+        <h3 class="font-oswald font-bold text-xl uppercase">Request Kue</h3>
+        <button onclick="closeRequest()" class="neo-btn w-9 h-9 bg-white">X</button>
+      </div>
+      <div class="p-5">
+        <p class="font-mono text-xs md:text-sm text-gray-700 mb-4">Selain menu di atas, tulis mau kue apa lagi — kolom khusus terpisah dari pesanan.</p>
+        <form id="requestForm" class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label for="reqNama" class="font-mono text-xs font-bold">NAMA *</label>
+              <input id="reqNama" name="nama" required placeholder="Nama" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50">
+            </div>
+            <div>
+              <label for="reqWa" class="font-mono text-xs font-bold">WA *</label>
+              <input id="reqWa" name="wa" required type="tel" placeholder="0812xxxx" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50">
+            </div>
+          </div>
+          <div>
+            <label for="reqText" class="font-mono text-xs font-bold">REQUEST KUE APA? *</label>
+            <textarea id="reqText" name="request" required rows="3" placeholder="Contoh: Bisa bikin bolu pandan topping keju extra?" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50 resize-none"></textarea>
+            <p class="font-mono text-[11px] text-gray-500 mt-1">Masuk tab REQUEST di Sheet — terpisah dari pesanan menu</p>
+          </div>
+          <button type="submit" class="neo-btn bg-neo-yellow font-mono text-sm font-bold px-6 py-3 w-full">KIRIM REQUEST</button>
+          <p id="requestStatus" class="font-mono text-xs hidden"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="contactModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
+    <div class="modal-box neo-card bg-white w-full max-w-2xl max-h-[90vh] overflow-auto p-0">
+      <div class="flex justify-between items-center p-4 border-b-[3px] border-gray-950 bg-white sticky top-0">
+        <h3 class="font-oswald font-bold text-xl uppercase">Saluran MARCO CAKE</h3>
+        <button onclick="closeContact()" class="neo-btn w-9 h-9 bg-white">X</button>
+      </div>
+      <div class="grid sm:grid-cols-5 gap-0">
+        <div class="sm:col-span-2 bg-gray-100 border-b sm:border-b-0 sm:border-r-[3px] border-gray-950 p-5 flex flex-col items-center text-center">
+          <div class="w-28 h-28 bg-white border-[3px] border-gray-950 overflow-hidden shadow-[4px_4px_0px_#111]">
+            <img src="asset/saluran.webp" alt="MARCO CAKE saluran" class="w-full h-full object-cover" loading="lazy">
+          </div>
+          <p class="font-mono font-bold text-sm mt-3">MARCO CAKE</p>
+          <p class="font-mono text-xs text-gray-600">Saluran Resmi</p>
+          <span class="mt-2 bg-neo-green text-white font-mono text-[11px] font-bold px-2 py-1 border-2 border-gray-950">TERVERIFIKASI</span>
+          <div class="mt-4 w-full bg-neo-yellow border-[3px] border-gray-950 p-3 shadow-[3px_3px_0px_#111]">
+            <p class="font-mono font-bold text-xs">LOKASI AMBIL</p>
+            <p class="font-oswald font-bold text-sm uppercase">Lobby MNC University</p>
+          </div>
+        </div>
+        <div class="sm:col-span-3 p-5">
+          <p class="font-mono text-xs font-bold tracking-widest mb-2">SALURAN WHATSAPP</p>
+          <p class="font-mono text-sm leading-relaxed">
+            Join saluran resmi <span class="bg-neo-green text-white px-1 border border-gray-950">MARCO CAKE</span> untuk info menu harian, slot pre-order, dan pengumuman ready di lobby.
+          </p>
+          <a href="https://whatsapp.com/channel/0029Vb8vRNnLtOjIayyRcb1F" target="_blank" rel="noopener" class="neo-btn bg-neo-green text-white font-mono text-sm font-bold w-full text-center py-3 mt-5 block">BUKA SALURAN WHATSAPP</a>
+          <p class="font-mono text-[11px] text-gray-500 text-center mt-2">tap tombol untuk buka saluran</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="variantModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
+    <div id="variantBox" class="modal-box neo-card bg-white w-full max-w-md p-0 max-h-[90vh] overflow-auto">
+      <div class="flex justify-between items-center p-4 border-b-[3px] border-gray-950 bg-white sticky top-0">
+        <h3 id="variantTitle" class="font-oswald font-bold text-xl uppercase">PILIH RASA</h3>
+        <button onclick="closeVariant()" class="neo-btn w-9 h-9 bg-white">X</button>
+      </div>
+      <div class="p-5">
+        <p id="variantProduct" class="font-mono text-sm font-bold mb-4"></p>
+        <div id="variantError" class="variant-error" role="alert" aria-live="polite"></div>
+        <div class="space-y-4">
+          <div>
+            <p class="font-mono text-xs font-bold mb-2">RASA *</p>
+            <div id="variantRasa" class="flex flex-wrap gap-2"></div>
+          </div>
+          <div id="variantToppingWrap" class="">
+            <p class="font-mono text-xs font-bold mb-2">TOPPING <span class="font-normal opacity-60">(boleh mix, tap beberapa)</span></p>
+            <div id="variantTopping" class="flex flex-wrap gap-2"></div>
+            <p class="font-mono text-[11px] text-gray-500 mt-1">brownies: oreo/meses warna/meses coklat/keju + tombol MIX — bolu: meses warna/meses coklat/keju</p>
+          </div>
+          <div>
+            <label for="variantCatatan" class="font-mono text-xs font-bold">CATATAN MIX / REQUEST <span class="font-normal opacity-60">(opsional)</span></label>
+            <input id="variantCatatan" placeholder="mis: mix 50% oreo 50% keju, atau request topping lain" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50 mt-1">
+          </div>
+          <button id="variantConfirm" onclick="confirmVariant()" class="neo-btn bg-neo-yellow font-mono font-bold text-sm w-full py-3">MAU INI!!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cartBar" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t-[3px] border-gray-950 px-4 md:px-8 py-3 md:py-4 flex items-center justify-between z-40 shadow-[0_-6px_0px_#111]">
+    <div class="font-mono">
+      <p id="cartCount" class="font-bold text-sm">0 item</p>
+      <p id="cartTotal" class="text-xs">Rp 0</p>
+    </div>
+    <button onclick="openDrawer()" class="neo-btn bg-gray-950 text-white font-mono text-sm font-bold px-6 py-3">LIHAT KERANJANG</button>
+  </div>
+
+  <div id="drawerOverlay" class="hidden fixed inset-0 bg-black/40 z-40" onclick="closeDrawer()"></div>
+  <div id="cartDrawer" class="closed fixed top-0 right-0 h-full w-[92%] max-w-sm bg-[#FAFAFA] border-l-[3px] border-gray-950 z-50 flex flex-col">
+    <div class="p-4 border-b-[3px] border-gray-950 flex justify-between items-center bg-white">
+      <h3 class="font-mono font-bold text-sm">KERANJANG</h3>
+      <button onclick="closeDrawer()" class="neo-btn w-9 h-9 flex items-center justify-center bg-white">X</button>
+    </div>
+    <div id="drawerList" class="flex-1 overflow-auto p-4"></div>
+    <div class="p-4 border-t-[3px] border-gray-950 bg-white">
+      <div class="bg-neo-yellow/20 border-2 border-gray-950 px-3 py-2 mb-3 font-mono text-xs">
+        <span class="font-bold">Ambil:</span> Tunggu di Lobby MNC University
+      </div>
+      <div class="flex justify-between font-mono font-bold text-sm mb-3">
+        <span>TOTAL</span><span id="drawerTotal">Rp 0</span>
+      </div>
+      <button onclick="openCheckout()" class="neo-btn bg-neo-yellow font-mono font-bold text-sm w-full py-3">PESAN SEKARANG</button>
+    </div>
+  </div>
+
+  <div id="checkoutModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
+    <div class="modal-box neo-card bg-white w-full max-w-md p-5 max-h-[90vh] overflow-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-oswald font-bold text-xl uppercase">Data Pesanan</h3>
+        <button onclick="closeCheckout()" class="neo-btn w-9 h-9 bg-white">X</button>
+      </div>
+      <form id="checkoutForm" class="space-y-4">
+        <div>
+          <label for="inputNama" class="font-mono text-xs font-bold">NAMA *</label>
+          <input id="inputNama" name="nama" required placeholder="Nama" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50">
+        </div>
+        <div>
+          <label for="inputWa" class="font-mono text-xs font-bold">WA *</label>
+          <input id="inputWa" name="wa" required type="tel" placeholder="0812xxxx" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50">
+        </div>
+        <div>
+          <label for="inputCatatan" class="font-mono text-xs font-bold">CATATAN</label>
+          <input id="inputCatatan" name="catatan" placeholder="Catatan umum" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50">
+        </div>
+        <div>
+          <p class="font-mono text-xs font-bold">PENGAMBILAN</p>
+          <div class="bg-neo-yellow border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm font-bold shadow-[3px_3px_0px_#111]">Tunggu di Lobby MNC University — <span class="font-normal">Info di Saluran</span></div>
+          <input type="hidden" name="metode" value="Tunggu di Lobby MNC University">
+        </div>
+        <div>
+          <p class="font-mono text-xs font-bold">FOTO SELFIE <span class="font-normal opacity-60">(opsional)</span></p>
+          <label for="selfieInput" class="block border-[3px] border-dashed border-gray-950 bg-gray-50 p-3 cursor-pointer hover:bg-yellow-50 transition-colors">
+            <input id="selfieInput" type="file" accept="image/jpeg,image/png" capture="user" class="hidden">
+            <span id="selfieLabel" class="font-mono text-xs">Klik untuk foto selfie</span>
+            <span class="block font-mono text-[11px] text-gray-500 mt-1">JPEG atau PNG max 2MB</span>
+          </label>
+          <div id="selfiePreview" class="mt-2 hidden">
+            <img id="selfieImg" class="w-24 h-24 object-cover" alt="preview selfie">
+            <button type="button" onclick="clearSelfie()" class="neo-btn bg-white font-mono text-xs px-3 py-1 mt-2">HAPUS FOTO</button>
+          </div>
+        </div>
+        <button type="submit" class="neo-btn bg-gray-950 text-white font-mono font-bold text-sm w-full py-3">KIRIM PESANAN</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
+    <div class="modal-box neo-card bg-neo-green w-full max-w-md p-6 text-center">
+      <h3 class="font-oswald font-bold text-2xl uppercase">PESANAN TERKIRIM</h3>
+      <p id="successText" class="font-mono text-sm mt-3 bg-white border-[3px] border-gray-950 p-3"></p>
+      <div id="successSelfieWrap" class="hidden mt-3">
+        <img id="successSelfie" class="w-20 h-20 object-cover mx-auto border-[3px] border-gray-950">
+      </div>
+      <p class="font-mono text-xs mt-3 bg-white/80 border border-gray-950 px-2 py-1">Tunggu di <span class="font-bold">Lobby MNC University</span> — cek saluran</p>
+      <button onclick="closeSuccess()" class="neo-btn bg-white font-mono font-bold text-sm px-6 py-2 mt-4">TUTUP</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    // fallback jika js/app.js gagal load - pastikan modal tetap buka (belajar dari kontak)
+    if (typeof window.openContact !== 'function') {
+      window.openContact = function() {
+        var m = document.getElementById('contactModal');
+        var ham = document.getElementById('brutalHamburger');
+        var nav = document.getElementById('brutalNavMenu');
+        if (ham) ham.setAttribute('aria-expanded','false');
+        if (nav) nav.classList.add('hidden');
+        if (m) { m.classList.remove('hidden'); m.classList.add('visible'); }
+      };
+      window.closeContact = function() {
+        var m = document.getElementById('contactModal');
+        if (m) { m.classList.add('hidden'); m.classList.remove('visible'); }
+      };
+    }
+    if (typeof window.openRequest !== 'function') {
+      window.openRequest = function() {
+        var m = document.getElementById('requestModal');
+        var ham = document.getElementById('brutalHamburger');
+        var nav = document.getElementById('brutalNavMenu');
+        if (ham) ham.setAttribute('aria-expanded','false');
+        if (nav) nav.classList.add('hidden');
+        if (m) { m.classList.remove('hidden'); m.classList.add('visible'); }
+      };
+      window.closeRequest = function() {
+        var m = document.getElementById('requestModal');
+        if (m) { m.classList.add('hidden'); m.classList.remove('visible'); }
+      };
+    }
+    var cm = document.getElementById('contactModal');
+    if (cm && !cm.dataset.bound) {
+      cm.dataset.bound = '1';
+      cm.addEventListener('click', function(e){ if(e.target===cm) window.closeContact(); });
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape') window.closeContact(); });
+    }
+    var rm = document.getElementById('requestModal');
+    if (rm && !rm.dataset.bound) {
+      rm.dataset.bound = '1';
+      rm.addEventListener('click', function(e){ if(e.target===rm) window.closeRequest(); });
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape') window.closeRequest(); });
+    }
+    if (typeof window.openVariant !== 'function') {
+      window.openVariant = function(id){
+        var m = document.getElementById('variantModal');
+        var ham = document.getElementById('brutalHamburger');
+        var nav = document.getElementById('brutalNavMenu');
+        if (ham) ham.setAttribute('aria-expanded','false');
+        if (nav) nav.classList.add('hidden');
+        if (m) { m.classList.remove('hidden'); m.classList.add('visible'); }
+      };
+      window.closeVariant = function(){
+        var m = document.getElementById('variantModal');
+        if (m) { m.classList.add('hidden'); m.classList.remove('visible'); }
+      };
+    }
+    var vm = document.getElementById('variantModal');
+    if (vm && !vm.dataset.bound) {
+      vm.dataset.bound = '1';
+      vm.addEventListener('click', function(e){ if(e.target===vm) window.closeVariant(); });
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape') window.closeVariant(); });
+    }
+  </script>
+</body>
+</html>
