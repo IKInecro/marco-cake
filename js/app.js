@@ -39,7 +39,6 @@ let variantSelectedId = null;
 let variantSelectedRasa = "";
 let variantSelectedToppings = [];
 let variantMix = false;
-let selfieData = ""; // base64 opsional
 
 const elGrid = document.getElementById("menuGrid");
 const elCartBar = document.getElementById("cartBar");
@@ -124,39 +123,6 @@ if(hero && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
   }, {passive:true});
 }
 
-
-// selfie handling — dual input galeri + kamera
-const selfieInput = document.getElementById("selfieInput");
-const selfieCameraInput = document.getElementById("selfieCameraInput");
-const selfiePreview = document.getElementById("selfiePreview");
-const selfieImg = document.getElementById("selfieImg");
-const selfieLabel = document.getElementById("selfieLabel");
-function handleSelfieFile(input){
-  const f = input.files[0];
-  console.log('selfie change', f && {name:f.name, type:f.type, size:f.size, id:input.id});
-  if(!f) return;
-  if(f.size > 10*1024*1024){ alert("Foto max 10MB — foto kamu "+(f.size/1024/1024).toFixed(1)+"MB, coba compress"); input.value=""; return; }
-  const r = new FileReader();
-  r.onerror = ()=>{ console.error('FileReader error', r.error); alert("Gagal baca foto"); };
-  r.onload = ()=>{
-    console.log('selfie loaded', r.result.slice(0,30));
-    selfieData = r.result;
-    selfieImg.src = selfieData;
-    selfiePreview.classList.remove("hidden");
-    selfieLabel.textContent = "📷 "+(f.name.length>20 ? f.name.slice(0,20)+"…" : f.name);
-    selfieLabel.classList.remove("hidden");
-  };
-  r.readAsDataURL(f);
-}
-if(selfieInput) selfieInput.addEventListener("change", ()=> handleSelfieFile(selfieInput));
-if(selfieCameraInput) selfieCameraInput.addEventListener("change", ()=> handleSelfieFile(selfieCameraInput));
-window.clearSelfie = ()=>{
-  selfieData = "";
-  if(selfieInput) selfieInput.value = "";
-  if(selfieCameraInput) selfieCameraInput.value = "";
-  if(selfiePreview) selfiePreview.classList.add("hidden");
-  if(selfieLabel){ selfieLabel.textContent = ""; selfieLabel.classList.add("hidden"); }
-};
 
 async function loadMenu(){
   try{
@@ -433,28 +399,24 @@ if(elCheckoutForm){
     const fd = new FormData(elCheckoutForm);
     const nama = fd.get("nama").trim();
     const wa = fd.get("wa").trim();
+    const kategori = fd.get("kategori");
     const catatan = fd.get("catatan").trim();
     const metode = fd.get("metode");
     const items = getCartItems();
     if(items.length===0) return;
     const total = cartTotal(items);
-    const payload = { nama, wa, catatan, metode, items: items.map(i=> `${i.label} x${i.qty}`), total, waktu: new Date().toISOString(), hasSelfie: !!selfieData };
+    const payload = { nama, wa, kategori, catatan, metode, items: items.map(i=> `${i.label} x${i.qty}`), total, waktu: new Date().toISOString() };
     const btn = elCheckoutForm.querySelector('button[type="submit"]');
     const prev = btn.textContent; btn.textContent = "MENGIRIM..."; btn.disabled = true;
     try{
       if(GAS_URL){
         await fetch(GAS_URL, { method:"POST", mode:"no-cors", body: JSON.stringify(payload) });
       }
-      const savedSelfie = selfieData;
       const allOrders = JSON.parse(localStorage.getItem("web-jualan-orders")||"[]");
-      allOrders.push({...payload, selfie: savedSelfie ? savedSelfie.slice(0,120)+"...truncated" : ""});
+      allOrders.push(payload);
       localStorage.setItem("web-jualan-orders", JSON.stringify(allOrders));
-      if(savedSelfie) localStorage.setItem("web-jualan-last-selfie", savedSelfie);
-      cart.clear(); variantMeta.clear(); updateCartUI(); closeCheckout(); elCheckoutForm.reset(); clearSelfie();
-      document.getElementById("successText").textContent = `Pesanan ${payload.items.join(", ")} - ${rupiah(total)} atas nama ${nama} terkirim.`;
-      const sw = document.getElementById("successSelfieWrap");
-      const si = document.getElementById("successSelfie");
-      if(savedSelfie){ si.src = savedSelfie; sw.classList.remove("hidden"); } else sw.classList.add("hidden");
+      cart.clear(); variantMeta.clear(); updateCartUI(); closeCheckout(); elCheckoutForm.reset();
+      document.getElementById("successText").textContent = `Pesanan ${payload.items.join(", ")} - ${rupiah(total)} atas nama ${nama} (${kategori}) terkirim.`;
       elSuccessModal.classList.remove("hidden"); elSuccessModal.classList.add("visible");
     }catch(err){ alert("Gagal kirim: " + err.message); }
     finally{ btn.textContent = prev; btn.disabled = false; }

@@ -124,8 +124,8 @@
             <ol class="font-mono text-[15px] md:text-sm space-y-2.5 md:space-y-2 list-decimal pl-5">
               <li>Pilih kue</li>
               <li>Buka keranjang</li>
-              <li>Isi nama dan WA</li>
-              <li>Foto selfie opsional</li>
+              <li>Isi nama, WA, kategori</li>
+              <li>Tulis catatan (opsional)</li>
               <li>Tunggu di lobby</li>
             </ol>
             <a href="#menu" class="hidden md:block neo-btn bg-gray-950 text-white font-mono text-sm font-bold w-full text-center py-3 mt-5">LIHAT MENU</a>
@@ -314,24 +314,18 @@
           <input type="hidden" name="metode" value="Tunggu di Lobby MNC University">
         </div>
         <div>
-          <p class="font-mono text-xs font-bold">FOTO SELFIE <span class="font-normal opacity-60">(opsional)</span></p>
-          <div class="grid grid-cols-2 gap-2">
-            <label for="selfieInput" class="relative block border-[3px] border-dashed border-gray-950 bg-gray-50 p-3 cursor-pointer hover:bg-yellow-50 transition-colors text-center">
-              <span class="font-mono text-xs font-bold relative z-10 pointer-events-none">🖼️ Galeri</span>
-              <span class="block font-mono text-[11px] text-gray-500 mt-1 relative z-10 pointer-events-none">Pilih foto</span>
-              <input id="selfieInput" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-            </label>
-            <label for="selfieCameraInput" class="relative block border-[3px] border-dashed border-gray-950 bg-gray-50 p-3 cursor-pointer hover:bg-yellow-50 transition-colors text-center">
-              <span class="font-mono text-xs font-bold relative z-10 pointer-events-none">📷 Kamera</span>
-              <span class="block font-mono text-[11px] text-gray-500 mt-1 relative z-10 pointer-events-none">Buka kamera</span>
-              <input id="selfieCameraInput" type="file" accept="image/*" capture="user" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-            </label>
-          </div>
-          <p id="selfieLabel" class="font-mono text-xs text-gray-600 mt-2 hidden"></p>
-          <div id="selfiePreview" class="mt-2 hidden">
-            <img id="selfieImg" class="w-24 h-24 object-cover" alt="preview selfie">
-            <button type="button" onclick="clearSelfie()" class="neo-btn bg-white font-mono text-xs px-3 py-1 mt-2">HAPUS FOTO</button>
-          </div>
+          <label for="inputKategori" class="font-mono text-xs font-bold">KATEGORI *</label>
+          <select id="inputKategori" name="kategori" required class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm bg-white focus:outline-none focus:bg-yellow-50">
+            <option value="" disabled selected>Pilih kategori</option>
+            <option>Mahasiswa — Informatika</option>
+            <option>Mahasiswa — Sistem Informasi</option>
+            <option>Mahasiswa — Manajemen</option>
+            <option>Mahasiswa — Akuntansi</option>
+            <option>Mahasiswa — DKV</option>
+            <option>Dosen</option>
+            <option>Staff</option>
+            <option>Umum</option>
+          </select>
         </div>
         <button type="submit" class="neo-btn bg-gray-950 text-white font-mono font-bold text-sm w-full py-3">KIRIM PESANAN</button>
       </form>
@@ -342,15 +336,12 @@
     <div class="modal-box neo-card bg-neo-green w-full max-w-md p-6 text-center">
       <h3 class="font-oswald font-bold text-2xl uppercase">PESANAN TERKIRIM</h3>
       <p id="successText" class="font-mono text-sm mt-3 bg-white border-[3px] border-gray-950 p-3"></p>
-      <div id="successSelfieWrap" class="hidden mt-3">
-        <img id="successSelfie" class="w-20 h-20 object-cover mx-auto border-[3px] border-gray-950">
-      </div>
       <p class="font-mono text-xs mt-3 bg-white/80 border border-gray-950 px-2 py-1">Tunggu di <span class="font-bold">Lobby MNC University</span> — cek saluran</p>
       <button onclick="closeSuccess()" class="neo-btn bg-white font-mono font-bold text-sm px-6 py-2 mt-4">TUTUP</button>
     </div>
   </div>
 
-  <script src="js/app.js?v=selfie3"></script>
+  <script src="js/app.js?v=kategori"></script>
   <script>
     // fallback jika js/app.js gagal load - pastikan modal tetap buka (belajar dari kontak)
     if (typeof window.openContact !== 'function') {

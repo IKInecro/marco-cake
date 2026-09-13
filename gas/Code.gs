@@ -16,7 +16,7 @@ function doPost(e){
     }
     const sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     if(!sh) throw new Error("Sheet " + SHEET_NAME + " not found");
-    sh.appendRow([new Date(), data.nama, data.wa, data.items.join(", "), data.total, data.catatan, data.metode, data.hasSelfie ? "ADA FOTO" : "-"]);
+    sh.appendRow([new Date(), data.nama, data.wa, data.kategori || "-", data.items.join(", "), data.total, data.catatan, data.metode]);
     return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
   }catch(err){
     return ContentService.createTextOutput(JSON.stringify({ok:false, error: err.message})).setMimeType(ContentService.MimeType.JSON);
@@ -28,7 +28,7 @@ function setup(){
   let sh = ss.getSheetByName(SHEET_NAME);
   if(!sh) sh = ss.insertSheet(SHEET_NAME);
   sh.clear();
-  sh.appendRow(["Waktu","Nama","WA","Pesanan","Total","Catatan","Metode","Selfie"]);
+  sh.appendRow(["Waktu","Nama","WA","Kategori","Pesanan","Total","Catatan","Metode"]);
   let sh2 = ss.getSheetByName("REQUEST");
   if(!sh2) sh2 = ss.insertSheet("REQUEST");
   sh2.clear();
