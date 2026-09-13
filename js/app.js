@@ -225,14 +225,17 @@ function renderMenu(items){
       imgs = fotos.map((src,idx)=> `<img src="${src}" alt="${m.nama} ${idx+1}" loading="${idx===0?'eager':'lazy'}" class="carousel-img ${idx===0?'active':''}" data-idx="${idx}">`).join("");
     }
     const wrapClass = fotos.length>1 ? "menu-carousel" : "";
-    html += `<div class="neo-card p-3 flex flex-col menu-card-in" style="animation-delay:${i*60}ms">
-      <div class="aspect-[4/3] bg-gray-100 border-[3px] border-gray-950 overflow-hidden mb-3 ${wrapClass}" data-carousel="${m.id}">
+    html += `<div class="menu-card-premium neo-card p-4 flex flex-col menu-card-in" style="animation-delay:${i*80}ms">
+      <div class="menu-card-accent -mx-4 -mt-4 mb-3"></div>
+      <div class="menu-card-img aspect-[4/3] bg-gray-100 overflow-hidden mb-3 ${wrapClass}" data-carousel="${m.id}">
         ${imgs}
       </div>
-      <h3 class="font-mono font-bold text-sm leading-tight">${m.nama}</h3>
-      <p class="font-mono text-xs text-gray-500 mb-2">${m.desc}</p>
-      <p class="font-mono font-bold text-sm mb-3">${rupiah(m.harga)}</p>
-      <button onclick="openVariant('${m.id}')" class="neo-btn bg-neo-yellow font-mono text-xs font-bold py-2.5 mt-auto">MAU INI!!</button>
+      <h3 class="font-oswald font-bold text-base leading-tight tracking-tight">${m.nama}</h3>
+      <span class="menu-card-desc mt-1">${m.desc}</span>
+      <div class="mt-3">
+        <span class="menu-card-price">${rupiah(m.harga)}</span>
+      </div>
+      <button onclick="openVariant('${m.id}')" class="menu-card-btn neo-btn bg-neo-yellow font-mono font-bold py-3 mt-4">MAU INI!!</button>
     </div>`;
   });
   elGrid.innerHTML = html;
@@ -266,25 +269,46 @@ function getToppingOptions(baseId){
   return ["oreo","meses warna","meses coklat","keju"];
 }
 
+function rasaColorClass(r, sel){
+  if(!sel) return "bg-white text-gray-900";
+  const m={coklat:"variant-rasa-coklat", strawberry:"variant-rasa-strawberry", matcha:"variant-rasa-matcha", pandan:"variant-rasa-pandan", vanila:"variant-rasa-vanila"};
+  return (m[r]||"bg-neo-yellow text-gray-900")+" border-gray-950 shadow-[3px_3px_0px_#111]";
+}
+function toppingColorClass(t, sel){
+  if(!sel) return "bg-white text-gray-900";
+  const m={"oreo":"variant-topping-oreo","meses warna":"variant-topping-meses-warna","meses coklat":"variant-topping-meses-coklat","keju":"variant-topping-keju"};
+  return (m[t]||"bg-neo-green text-white")+" border-gray-950 shadow-[3px_3px_0px_#111]";
+}
 function renderVariantChoices(){
   if(!elVariantRasa || !elVariantTopping) return;
   const rasaOpts = getRasaOptions(variantSelectedId);
   elVariantRasa.innerHTML = rasaOpts.map(r=>{
-    const sel = r===variantSelectedRasa ? "bg-neo-yellow border-gray-950 shadow-[2px_2px_0px_#111]" : "bg-white";
-    return `<button onclick="selectRasa('${r}')" class="neo-btn font-mono text-xs font-bold px-3 py-2 ${sel}">${r}</button>`;
+    const isSel = r===variantSelectedRasa;
+    const cls = rasaColorClass(r, isSel);
+    return `<button onclick="selectRasa('${r}')" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${cls}" style="border-radius:14px;">${r}</button>`;
   }).join("");
   elVariantToppingWrap.classList.remove("hidden");
   const topOpts = getToppingOptions(variantSelectedId);
   let html = topOpts.map(t=>{
-    const sel = variantSelectedToppings.includes(t) ? "bg-neo-green text-white border-gray-950 shadow-[2px_2px_0px_#111]" : "bg-white";
-    return `<button onclick="selectTopping('${t}')" class="neo-btn font-mono text-xs font-bold px-3 py-2 ${sel}">${t}</button>`;
+    const isSel = variantSelectedToppings.includes(t);
+    const cls = toppingColorClass(t, isSel);
+    return `<button onclick="selectTopping('${t}')" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${cls}" style="border-radius:14px;">${t}</button>`;
   }).join("");
-  // MIX button khusus brownies — males ngetik, campur sesuai stok
-  if(variantSelectedId && variantSelectedId.startsWith("brw")){
-    const selMix = variantMix ? "bg-neo-pink text-white border-gray-950 shadow-[2px_2px_0px_#111]" : "bg-white";
-    html += `<button onclick="toggleMix()" class="neo-btn font-mono text-xs font-bold px-3 py-2 ${selMix}">MIX</button>`;
-  }
+  const isMixSel = variantMix;
+  const mixCls = isMixSel ? "variant-topping-mix border-gray-950 shadow-[3px_3px_0px_#111] text-white" : "bg-white text-gray-900";
+  html += `<button onclick="toggleMix()" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${mixCls}" style="border-radius:14px;">MIX</button>`;
   elVariantTopping.innerHTML = html;
+  // preview pilihan — MIX = rasa + MIX doang, gak list semua
+  const preview = document.getElementById('variantPreview');
+  const previewText = document.getElementById('variantPreviewText');
+  if(preview && previewText){
+    if(variantSelectedRasa || variantSelectedToppings.length || variantMix){
+      const rasa = variantSelectedRasa || '—';
+      const top = variantMix ? 'MIX' : (variantSelectedToppings.length ? variantSelectedToppings.join(', ') : '—');
+      previewText.textContent = `${rasa} + ${top}`;
+      preview.classList.remove('hidden');
+    } else preview.classList.add('hidden');
+  }
 }
 function clearVariantError(){
   const el=document.getElementById('variantError');
@@ -303,11 +327,35 @@ function showVariantError(msg){
 window.selectRasa = (r)=>{ playSound('pilih'); variantSelectedRasa=r; clearVariantError(); renderVariantChoices(); };
 window.selectTopping = (t)=>{
   playSound('pilih');
+  if(variantMix){
+    // MIX on → tap topping = keluar MIX, hapus yang di-tap dari semua
+    variantMix = false;
+    const all = getToppingOptions(variantSelectedId);
+    variantSelectedToppings = all.filter(x=>x!==t);
+    clearVariantError(); renderVariantChoices();
+    return;
+  }
   if(variantSelectedToppings.includes(t)) variantSelectedToppings = variantSelectedToppings.filter(x=>x!==t);
   else variantSelectedToppings.push(t);
+  // auto MIX kalau semua kepilih manual
+  const all = getToppingOptions(variantSelectedId);
+  if(variantSelectedToppings.length === all.length && all.length>0){
+    variantMix = true;
+    variantSelectedToppings = all.slice();
+  }
   clearVariantError(); renderVariantChoices();
 };
-window.toggleMix = ()=>{ playSound('pilih'); variantMix = !variantMix; clearVariantError(); renderVariantChoices(); };
+window.toggleMix = ()=>{
+  playSound('pilih');
+  variantMix = !variantMix;
+  if(variantMix){
+    // pilih semua topping yang ada
+    variantSelectedToppings = getToppingOptions(variantSelectedId).slice();
+  } else {
+    variantSelectedToppings = [];
+  }
+  clearVariantError(); renderVariantChoices();
+};
 
 window.openVariant = (id)=>{
   playSound('mauIni');
@@ -339,10 +387,9 @@ window.confirmVariant = ()=>{
   }
   playSound('mauIni');
   const catatanRaw = elVariantCatatan ? elVariantCatatan.value.trim() : "";
-  const toppingBase = variantSelectedToppings.slice().sort().join(", ");
-  const toppingStr = variantMix ? (toppingBase ? `${toppingBase} + MIX` : "MIX") : toppingBase;
+  const toppingStr = variantMix ? "MIX" : variantSelectedToppings.slice().sort().join(", ");
   const catatan = variantMix ? (catatanRaw ? `MIX - ${catatanRaw}` : "MIX - campur sesuai stok topping") : catatanRaw;
-  const key = variantKey(variantSelectedId, variantSelectedRasa, variantSelectedToppings, variantMix);
+  const key = variantKey(variantSelectedId, variantSelectedRasa, variantMix ? [] : variantSelectedToppings, variantMix);
   const cur = cart.get(key) || 0;
   cart.set(key, cur+1);
   variantMeta.set(key, {baseId: variantSelectedId, rasa: variantSelectedRasa, topping: toppingStr, catatan});
@@ -509,9 +556,31 @@ if(elCheckoutForm){
       allOrders.push(payload);
       localStorage.setItem("web-jualan-orders", JSON.stringify(allOrders));
       cart.clear(); variantMeta.clear(); updateCartUI(); closeCheckout(); elCheckoutForm.reset();
-      document.getElementById("successText").textContent = `Pesanan ${payload.items.join(", ")} - ${rupiah(total)} atas nama ${nama} (${kategori}) terkirim.`;
+      // show loader then morph to detail card
+      const loaderEl = document.getElementById('orderLoader');
+      const detailEl = document.getElementById('orderDetail');
+      loaderEl.classList.remove('morph-out'); detailEl.classList.add('hidden'); detailEl.classList.remove('morph-in');
       elSuccessModal.classList.remove("hidden"); elSuccessModal.classList.add("visible");
-      playSound('terkirim');
+      loaderEl.style.display = 'flex';
+      detailEl.classList.add('hidden');
+      // populate detail
+      document.getElementById('detailNama').textContent = nama;
+      document.getElementById('detailWa').textContent = wa;
+      document.getElementById('detailKategori').textContent = kategori;
+      document.getElementById('detailItems').innerHTML = items.map(i=> `<div class="flex justify-between"><span>${i.label} × ${i.qty}</span><span>${rupiah(i.harga * i.qty)}</span></div>`).join('');
+      document.getElementById('detailTotal').textContent = rupiah(total);
+      const catWrap = document.getElementById('detailCatatanWrap');
+      if(catatan){ document.getElementById('detailCatatan').textContent = catatan; catWrap.classList.remove('hidden'); } else catWrap.classList.add('hidden');
+      // morph after 2.2s
+      setTimeout(()=>{
+        loaderEl.classList.add('morph-out');
+        setTimeout(()=>{
+          loaderEl.style.display = 'none';
+          detailEl.classList.remove('hidden');
+          detailEl.classList.add('morph-in');
+          playSound('terkirim');
+        }, 400);
+      }, 2200);
     }catch(err){ alert("Gagal kirim: " + err.message); }
     finally{ btn.textContent = prev; btn.disabled = false; }
   });

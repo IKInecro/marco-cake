@@ -45,16 +45,23 @@ body { font-family: 'Space Grotesk', sans-serif; }
 #brutalHamburger[aria-expanded="true"] .hamburger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
 #brutalHamburger[aria-expanded="true"] .hamburger-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-/* menu grid */
+/* menu grid — full redesign rounded */
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
-@media (min-width: 768px) { .menu-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; } }
-.menu-grid .neo-card { content-visibility: auto; contain-intrinsic-size: 300px 380px; }
-.menu-card-in { animation: cardIn 0.4s cubic-bezier(0.16,1,0.3,1) backwards; }
-@keyframes cardIn { from { opacity:0; transform: translateY(12px) scale(0.98); } to { opacity:1; transform: none; } }
+@media (min-width: 768px) { .menu-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
+.menu-grid .neo-card { content-visibility: auto; contain-intrinsic-size: 340px 420px; }
+.menu-card-in { animation: cardIn 0.45s cubic-bezier(0.16,1,0.3,1) backwards; }
+@keyframes cardIn { from { opacity:0; transform: translateY(14px) scale(0.97); } to { opacity:1; transform: none; } }
+.menu-card-premium { position: relative; border-radius: 24px; overflow: hidden; background: rgba(255,255,255,0.96); backdrop-filter: blur(6px); border: 3px solid #111; box-shadow: 8px 8px 0 #111; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.menu-card-premium:hover { transform: translate(2px,2px); box-shadow: 4px 4px 0 #111; }
+.menu-card-accent { display: none; }
+.menu-card-img { border-radius: 18px; overflow: hidden; border: 3px solid #111; }
+.menu-card-price { display: inline-flex; align-items: center; background: #FACC15; border: 2px solid #111; border-radius: 9999px; padding: 4px 10px; font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; box-shadow: 2px 2px 0 #111; }
+.menu-card-desc { background: #f3f4f6; border: 2px solid #111; border-radius: 9999px; padding: 3px 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #374151; display: inline-block; }
+.menu-card-btn { border-radius: 9999px !important; font-size: 13px; letter-spacing: 0.04em; }
 
 .headline-underline { transition: width 0.5s cubic-bezier(0.16,1,0.3,1); }
 .group:hover .headline-underline { width: 100%; }
@@ -217,6 +224,19 @@ body { font-family: 'Space Grotesk', sans-serif; }
 .qr-card.qr-border { animation: qrBorder 0.4s steps(1); }
 @keyframes qrBorder { 0%{border-color:#111; box-shadow:8px 8px 0 #111} 33%{border-color:#FF4D8D; box-shadow:8px 8px 0 #FF4D8D} 66%{border-color:#22C55E; box-shadow:8px 8px 0 #22C55E} 100%{border-color:#111; box-shadow:8px 8px 0 #111} }
 
+/* variant rasa topping — per warna */
+.variant-rasa-coklat{ background:#8B4513 !important; color:white !important; }
+.variant-rasa-strawberry{ background:#FF4D8D !important; color:white !important; }
+.variant-rasa-matcha{ background:#16A34A !important; color:white !important; }
+.variant-rasa-pandan{ background:#16A34A !important; color:white !important; }
+.variant-rasa-vanila{ background:#FEF3C7 !important; color:#111 !important; border-color:#111 !important; }
+.variant-topping-oreo{ background:#111 !important; color:white !important; }
+.variant-topping-meses-warna{ background:linear-gradient(90deg,#EF4444 0% 16%,#F59E0B 16% 32%,#FACC15 32% 48%,#22C55E 48% 64%,#3B82F6 64% 80%,#A855F7 80% 100%) !important; color:white !important; text-shadow:0 1px 2px rgba(0,0,0,0.6); }
+.variant-topping-meses-coklat{ background:repeating-linear-gradient(45deg,#fff 0 6px,#8B4513 6px 12px) !important; color:#111 !important; }
+.variant-topping-keju{ background:#FACC15 !important; color:#111 !important; }
+.variant-topping-mix{ background:conic-gradient(from 180deg,#EF4444,#F59E0B,#FACC15,#22C55E,#3B82F6,#A855F7,#EF4444) !important; color:white !important; text-shadow:0 1px 3px rgba(0,0,0,0.7); }
+.variant-card { border:3px solid #111; box-shadow:4px 4px 0 #111; transition:all 0.12s ease; }
+.variant-card:active{ transform:translate(2px,2px); box-shadow:2px 2px 0 #111; }
 /* selfie preview */
 #selfiePreview img { border: 3px solid #111; box-shadow: 4px 4px 0px #111; }
 
@@ -260,6 +280,28 @@ body.loaded #heroHeadline { animation: heroEntrance 0.9s cubic-bezier(0.16,1,0.3
 @keyframes eyesMovement{ 0%,49%{transform:translateX(0px)} 50%,99%{transform:translateX(10px)} 100%{transform:translateX(0px)} }
 #shadow{ background-color:black;width:140px;height:140px;position:absolute;border-radius:50%;transform:rotateX(80deg);filter:blur(20px);top:80%;animation:shadowMovement infinite 0.5s }
 @keyframes shadowMovement{ 0%,49%{opacity:0.5} 50%,100%{opacity:0.2} }
+
+/* pacman loader JkHuger + morph success */
+#pacmanContainer { position: relative; width: 300px; height: 120px; overflow: hidden; }
+.circle { position: absolute; left: -100px; top: 10px; width: 0; height: 0; border: 30px solid #FDD835; border-radius: 50%; border-right-color: transparent; animation: pacmanMove 2.5s linear infinite; }
+.circle:before { content:""; position:absolute; top:-30px; left:-30px; width:0; height:0; border:30px solid #FDD835; border-radius:50%; border-right-color:transparent; animation: pacmanChomp1 0.25s ease-in-out infinite; }
+.circle:after { content:""; position:absolute; top:-30px; left:-30px; width:0; height:0; border:30px solid #FDD835; border-radius:50%; border-right-color:transparent; animation: pacmanChomp2 0.25s ease-in-out infinite; }
+.dots, .dots2 { position: absolute; top: 35px; display:flex; }
+.dots { left: 60px; } .dots2 { left: 70px; }
+.dot, .dot2 { width:8px; height:8px; margin:0 8px; border-radius:50%; }
+.dot { background:#1E88E5; animation: pacmanDot1 2.5s linear infinite; }
+.dot2 { background:#F44336; animation: pacmanDot2 2.5s linear infinite; opacity:0; }
+.dot:nth-child(1){animation-delay:0s} .dot:nth-child(2){animation-delay:0.12s} .dot:nth-child(3){animation-delay:0.24s} .dot:nth-child(4){animation-delay:0.36s} .dot:nth-child(5){animation-delay:0.48s} .dot:nth-child(6){animation-delay:0.6s} .dot:nth-child(7){animation-delay:0.72s} .dot:nth-child(8){animation-delay:0.84s} .dot:nth-child(9){animation-delay:0.96s} .dot:nth-child(10){animation-delay:1.08s}
+.dot2:nth-child(1){animation-delay:1.25s} .dot2:nth-child(2){animation-delay:1.37s} .dot2:nth-child(3){animation-delay:1.49s} .dot2:nth-child(4){animation-delay:1.61s} .dot2:nth-child(5){animation-delay:1.73s} .dot2:nth-child(6){animation-delay:1.85s} .dot2:nth-child(7){animation-delay:1.97s} .dot2:nth-child(8){animation-delay:2.09s} .dot2:nth-child(9){animation-delay:2.21s} .dot2:nth-child(10){animation-delay:2.33s}
+@keyframes pacmanChomp1{0%{transform:rotate(0)}50%{transform:rotate(35deg)}100%{transform:rotate(0)}}
+@keyframes pacmanChomp2{0%{transform:rotate(0)}50%{transform:rotate(-35deg)}100%{transform:rotate(0)}}
+@keyframes pacmanMove{0%{left:-60px; transform:rotateY(0)}48%{transform:rotateY(0)}50%{left:100%; transform:rotateY(180deg)}100%{left:-60px; transform:rotateY(180deg)}}
+@keyframes pacmanDot1{0%,4%{opacity:1}5%,94%{opacity:0}95%,100%{opacity:1}}
+@keyframes pacmanDot2{0%,4%{opacity:1}5%,94%{opacity:0}95%,100%{opacity:1}}
+#orderLoader.morph-out { animation: loaderMorphOut 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes loaderMorphOut{ from{opacity:1; transform:scale(1)} to{opacity:0; transform:scale(0.96)} }
+#orderDetail.morph-in { animation: detailMorphIn 0.45s cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes detailMorphIn{ from{opacity:0; transform:translateY(8px) scale(0.98)} to{opacity:1; transform:none} }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

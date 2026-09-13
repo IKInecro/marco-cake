@@ -29,7 +29,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=qr-idle">
+  <link rel="stylesheet" href="css/style.css?v=final">
 </head>
 <body class="bg-[#FAFAFA] text-gray-900 antialiased pb-20">
   <div id="loader" class="fixed inset-0 z-[100] bg-[#FAFAFA] flex items-center justify-center">
@@ -247,29 +247,43 @@
   </div>
 
   <div id="variantModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
-    <div id="variantBox" class="modal-box neo-card bg-white w-full max-w-md p-0 max-h-[90vh] overflow-auto">
-      <div class="flex justify-between items-center p-4 border-b-[3px] border-gray-950 bg-white sticky top-0">
-        <h3 id="variantTitle" class="font-oswald font-bold text-xl uppercase">PILIH RASA</h3>
-        <button onclick="closeVariant()" class="neo-btn w-9 h-9 bg-white">X</button>
-      </div>
-      <div class="p-5">
-        <p id="variantProduct" class="font-mono text-sm font-bold mb-4"></p>
-        <div id="variantError" class="variant-error" role="alert" aria-live="polite"></div>
-        <div class="space-y-4">
-          <div>
-            <p class="font-mono text-xs font-bold mb-2">RASA *</p>
-            <div id="variantRasa" class="flex flex-wrap gap-2"></div>
-          </div>
-          <div id="variantToppingWrap" class="">
-            <p class="font-mono text-xs font-bold mb-2">TOPPING <span class="font-normal opacity-60">(boleh mix, tap beberapa)</span></p>
-            <div id="variantTopping" class="flex flex-wrap gap-2"></div>
-          </div>
-          <div>
-            <label for="variantCatatan" class="font-mono text-xs font-bold">CATATAN MIX / REQUEST <span class="font-normal opacity-60">(opsional)</span></label>
-            <input id="variantCatatan" placeholder="mis: mix 50% oreo 50% keju, atau request topping lain" class="w-full border-[3px] border-gray-950 px-3 py-2.5 font-mono text-sm focus:outline-none focus:bg-yellow-50 mt-1">
-          </div>
-          <button id="variantConfirm" onclick="confirmVariant()" class="neo-btn bg-neo-yellow font-mono font-bold text-sm w-full py-3">MAU INI!!</button>
+    <div id="variantBox" class="modal-box bg-white w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col" style="border:3px solid #111; border-radius:24px; box-shadow:8px 8px 0 #111;">
+      <div class="flex justify-between items-center p-4 bg-white border-b-[3px] border-gray-950 sticky top-0">
+        <div>
+          <h3 id="variantTitle" class="font-oswald font-bold text-xl uppercase leading-none">PILIH RASA</h3>
+          <p id="variantProduct" class="font-mono text-xs text-gray-500 mt-1"></p>
         </div>
+        <button onclick="closeVariant()" class="neo-btn w-10 h-10 bg-white rounded-full flex items-center justify-center" style="border-radius:9999px;">✕</button>
+      </div>
+      <div class="p-5 space-y-5 overflow-auto">
+        <div id="variantError" class="variant-error" role="alert" aria-live="polite"></div>
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="bg-gray-950 text-white font-mono text-[11px] font-bold px-2 py-1 rounded-full">1</span>
+            <p class="font-mono text-xs font-bold">RASA *</p>
+            <span class="ml-auto font-mono text-[11px] text-gray-400">tap satu</span>
+          </div>
+          <div id="variantRasa" class="grid grid-cols-3 gap-2"></div>
+        </div>
+        <div id="variantToppingWrap" class="">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="bg-gray-950 text-white font-mono text-[11px] font-bold px-2 py-1 rounded-full">2</span>
+            <p class="font-mono text-xs font-bold">TOPPING <span class="font-normal opacity-60">(boleh mix)</span></p>
+            <span class="ml-auto font-mono text-[11px] text-gray-400">tap beberapa</span>
+          </div>
+          <div id="variantTopping" class="grid grid-cols-2 gap-2"></div>
+        </div>
+        <div>
+          <label for="variantCatatan" class="font-mono text-xs font-bold flex items-center gap-2"><span class="bg-gray-100 border border-gray-950 px-1.5 py-0.5 rounded-full text-[11px]">3</span> CATATAN <span class="font-normal opacity-60">(opsional)</span></label>
+          <input id="variantCatatan" placeholder="mix 50% oreo 50% keju, request lain" class="w-full border-[3px] border-gray-950 px-3 py-3 font-mono text-sm focus:outline-none focus:bg-yellow-50 mt-2" style="border-radius:16px;">
+        </div>
+        <div id="variantPreview" class="hidden bg-neo-yellow/20 border-[3px] border-gray-950 p-3" style="border-radius:16px;">
+          <p class="font-mono text-[11px] font-bold">PILIHAN KAMU</p>
+          <p id="variantPreviewText" class="font-mono text-xs mt-1 font-bold"></p>
+        </div>
+      </div>
+      <div class="p-4 bg-white border-t-[3px] border-gray-950">
+        <button id="variantConfirm" onclick="confirmVariant()" class="neo-btn bg-neo-yellow font-mono font-bold text-sm w-full py-3" style="border-radius:9999px;">MAU INI!!</button>
       </div>
     </div>
   </div>
@@ -347,15 +361,56 @@
   </div>
 
   <div id="successModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
-    <div class="modal-box neo-card bg-neo-green w-full max-w-md p-6 text-center">
-      <h3 class="font-oswald font-bold text-2xl uppercase">PESANAN TERKIRIM</h3>
-      <p id="successText" class="font-mono text-sm mt-3 bg-white border-[3px] border-gray-950 p-3"></p>
-      <p class="font-mono text-xs mt-3 bg-white/80 border border-gray-950 px-2 py-1">Tunggu di <span class="font-bold">Lobby MNC University</span> — cek saluran</p>
-      <button onclick="closeSuccess()" class="neo-btn bg-white font-mono font-bold text-sm px-6 py-2 mt-4">TUTUP</button>
+    <div id="successBox" class="modal-box neo-card bg-white w-full max-w-md p-0 overflow-hidden">
+      <div id="orderLoader" class="p-8 flex flex-col items-center justify-center bg-[#FAFAFA]">
+        <div id="pacmanContainer" class="scale-[0.6] md:scale-75">
+          <div class="circle"></div>
+          <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+          <div class="dots2"><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div><div class="dot2"></div></div>
+        </div>
+        <p class="font-mono text-xs font-bold tracking-[0.2em] mt-2">MENGIRIM PESANAN</p>
+        <p class="font-mono text-[11px] text-gray-500">tunggu sebentar</p>
+      </div>
+      <div id="orderDetail" class="hidden">
+        <div class="bg-neo-green p-4 text-center border-b-[3px] border-gray-950">
+          <p class="font-mono text-xs font-bold tracking-[0.2em] text-white">✓ PESANAN TERKIRIM</p>
+          <h3 class="font-oswald font-bold text-xl uppercase mt-1">Terima kasih!</h3>
+        </div>
+        <div class="p-4 space-y-3">
+          <div class="bg-gray-950 text-white p-3 border-[3px] border-gray-950">
+            <p class="font-mono text-[11px] opacity-70">PEMBELI</p>
+            <p id="detailNama" class="font-mono font-bold text-sm"></p>
+            <p id="detailKategori" class="font-mono text-xs opacity-80"></p>
+            <p id="detailWa" class="font-mono text-xs mt-1 opacity-70"></p>
+          </div>
+          <div class="bg-neo-yellow border-[3px] border-gray-950 p-3">
+            <p class="font-mono text-[11px] font-bold">PESANAN</p>
+            <div id="detailItems" class="font-mono text-xs mt-1 space-y-1"></div>
+            <div class="flex justify-between font-mono font-bold text-sm mt-2 pt-2 border-t-2 border-gray-950">
+              <span>TOTAL</span><span id="detailTotal"></span>
+            </div>
+          </div>
+          <div id="detailCatatanWrap" class="hidden bg-white border-[3px] border-gray-950 p-3">
+            <p class="font-mono text-[11px] font-bold">CATATAN</p>
+            <p id="detailCatatan" class="font-mono text-xs mt-1"></p>
+          </div>
+          <div class="bg-white border-[3px] border-gray-950 p-3 flex items-center justify-between">
+            <div>
+              <p class="font-mono text-[11px] font-bold">AMBIL DI</p>
+              <p class="font-oswald font-bold text-sm uppercase">Lobby MNC University</p>
+              <p class="font-mono text-[11px] text-gray-500">cek saluran untuk jadwal</p>
+            </div>
+            <span class="bg-neo-green text-white font-mono text-[11px] font-bold px-2 py-1 border-2 border-gray-950">BOOTH ON</span>
+          </div>
+        </div>
+        <div class="p-4 pt-0">
+          <button onclick="closeSuccess()" class="neo-btn bg-gray-950 text-white font-mono font-bold text-sm w-full py-3">TUTUP</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <script src="js/app.js?v=sound8"></script>
+  <script src="js/app.js?v=final"></script>
   <script>
     // fallback jika js/app.js gagal load - pastikan modal tetap buka (belajar dari kontak)
     if (typeof window.openContact !== 'function') {
