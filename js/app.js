@@ -430,15 +430,16 @@ if(elCheckoutForm){
       if(GAS_URL){
         await fetch(GAS_URL, { method:"POST", mode:"no-cors", body: JSON.stringify(payload) });
       }
+      const savedSelfie = selfieData;
       const allOrders = JSON.parse(localStorage.getItem("web-jualan-orders")||"[]");
-      allOrders.push({...payload, selfie: selfieData ? selfieData.slice(0,120)+"...truncated" : ""});
+      allOrders.push({...payload, selfie: savedSelfie ? savedSelfie.slice(0,120)+"...truncated" : ""});
       localStorage.setItem("web-jualan-orders", JSON.stringify(allOrders));
-      if(selfieData) localStorage.setItem("web-jualan-last-selfie", selfieData);
+      if(savedSelfie) localStorage.setItem("web-jualan-last-selfie", savedSelfie);
       cart.clear(); variantMeta.clear(); updateCartUI(); closeCheckout(); elCheckoutForm.reset(); clearSelfie();
       document.getElementById("successText").textContent = `Pesanan ${payload.items.join(", ")} - ${rupiah(total)} atas nama ${nama} terkirim.`;
       const sw = document.getElementById("successSelfieWrap");
       const si = document.getElementById("successSelfie");
-      if(selfieData){ si.src = selfieData; sw.classList.remove("hidden"); } else sw.classList.add("hidden");
+      if(savedSelfie){ si.src = savedSelfie; sw.classList.remove("hidden"); } else sw.classList.add("hidden");
       elSuccessModal.classList.remove("hidden"); elSuccessModal.classList.add("visible");
     }catch(err){ alert("Gagal kirim: " + err.message); }
     finally{ btn.textContent = prev; btn.disabled = false; }
