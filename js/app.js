@@ -116,31 +116,42 @@ if(hero && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
 }
 
 
-// selfie handling
+// selfie handling — mobile fix: label trigger + 5MB + HEIC guard
 const selfieInput = document.getElementById("selfieInput");
 const selfiePreview = document.getElementById("selfiePreview");
 const selfieImg = document.getElementById("selfieImg");
 const selfieLabel = document.getElementById("selfieLabel");
+const selfieWrap = document.querySelector('label[for="selfieInput"]');
+if(selfieWrap && selfieInput){
+  selfieWrap.addEventListener('click', (e)=>{
+    // ponytail: ensure hidden input still opens on iOS
+    if(e.target.closest('button')) return;
+    e.preventDefault();
+    selfieInput.click();
+  });
+}
 if(selfieInput){
   selfieInput.addEventListener("change", ()=>{
     const f = selfieInput.files[0];
     if(!f) return;
-    if(f.size > 2*1024*1024){ alert("Foto max 2MB"); selfieInput.value=""; return; }
+    if(!f.type.startsWith('image/')){ alert("File harus gambar"); selfieInput.value=""; return; }
+    if(f.size > 5*1024*1024){ alert("Foto max 5MB — foto HP biasanya 2-3MB, coba lagi"); selfieInput.value=""; return; }
     const r = new FileReader();
+    r.onerror = ()=> alert("Gagal baca foto");
     r.onload = ()=>{
       selfieData = r.result;
       selfieImg.src = selfieData;
       selfiePreview.classList.remove("hidden");
-      selfieLabel.textContent = f.name;
+      selfieLabel.textContent = f.name.length>24 ? f.name.slice(0,24)+"…" : f.name;
     };
     r.readAsDataURL(f);
   });
 }
 window.clearSelfie = ()=>{
   selfieData = "";
-  selfieInput.value = "";
-  selfiePreview.classList.add("hidden");
-  selfieLabel.textContent = "Klik untuk foto selfie — biar penjual kenali wajah";
+  if(selfieInput) selfieInput.value = "";
+  if(selfiePreview) selfiePreview.classList.add("hidden");
+  if(selfieLabel) selfieLabel.textContent = "Klik untuk foto selfie";
 };
 
 async function loadMenu(){
