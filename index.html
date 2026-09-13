@@ -318,7 +318,7 @@
           <label for="selfieInput" class="relative block border-[3px] border-dashed border-gray-950 bg-gray-50 p-3 cursor-pointer hover:bg-yellow-50 transition-colors">
             <span id="selfieLabel" class="font-mono text-xs relative z-10 pointer-events-none">Klik untuk foto selfie</span>
             <span class="block font-mono text-[11px] text-gray-500 mt-1 relative z-10 pointer-events-none">JPEG/PNG max 10MB — tap untuk kamera/galeri</span>
-            <input id="selfieInput" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
+            <input id="selfieInput" type="file" accept="image/*" capture="user" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
           </label>
           <div id="selfiePreview" class="mt-2 hidden">
             <img id="selfieImg" class="w-24 h-24 object-cover" alt="preview selfie">
