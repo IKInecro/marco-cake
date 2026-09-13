@@ -133,13 +133,14 @@ const selfieLabel = document.getElementById("selfieLabel");
 if(selfieInput){
   selfieInput.addEventListener("change", ()=>{
     const f = selfieInput.files[0];
+    console.log('selfie change', f && {name:f.name, type:f.type, size:f.size});
     if(!f) return;
-    // some Android gallery returns empty type, skip strict check if size ok
-    if(f.type && !f.type.startsWith('image/')){ alert("File harus gambar"); selfieInput.value=""; return; }
-    if(f.size > 5*1024*1024){ alert("Foto max 5MB — coba foto lain"); selfieInput.value=""; return; }
+    if(f.size > 10*1024*1024){ alert("Foto max 10MB — foto kamu "+(f.size/1024/1024).toFixed(1)+"MB, coba compress"); selfieInput.value=""; return; }
+    // allow empty type (some galleries) — try read anyway
     const r = new FileReader();
-    r.onerror = ()=> alert("Gagal baca foto");
+    r.onerror = ()=>{ console.error('FileReader error', r.error); alert("Gagal baca foto"); };
     r.onload = ()=>{
+      console.log('selfie loaded', r.result.slice(0,30));
       selfieData = r.result;
       selfieImg.src = selfieData;
       selfiePreview.classList.remove("hidden");
@@ -147,6 +148,8 @@ if(selfieInput){
     };
     r.readAsDataURL(f);
   });
+  // iOS fallback: ensure tap not blocked by label z-index
+  selfieInput.addEventListener('click', (e)=> e.stopPropagation());
 }
 window.clearSelfie = ()=>{
   selfieData = "";
