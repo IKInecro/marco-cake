@@ -17,7 +17,7 @@
   if(document.readyState === 'complete') done();
   else window.addEventListener('load', done);
 })();
-const GAS_URL = "";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwTNe5gMxd6XgXLpVpCmupC9CfnqwjTao5vhPgpUS47HS7j_d4j9gyOwbRX2xQbzXNt/exec";
 const menuFallback = [
   {"id":"brw250","nama":"Brownies 250ml","harga":20000,"desc":"Cup 250ml — 1 cup","foto":"asset/brownies/5.webp","fotos":["asset/brownies/5.webp","asset/brownies/6.webp"]},
   {"id":"brw500","nama":"Brownies 500ml","harga":35000,"desc":"Cup 500ml — 1 cup","foto":"asset/brownies/7.webp","fotos":["asset/brownies/7.webp","asset/brownies/8.webp"]},
