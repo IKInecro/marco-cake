@@ -1,6 +1,15 @@
-// loader 3s
+// loader 3s + ghost 5 warna random (hijau biru tua pink kuning merah)
 (function(){
   const loader = document.getElementById('loader');
+  const ghost = document.getElementById('ghost');
+  const palette = ['#22C55E','#0038FF','#FF4D8D','#FACC15','#EF4444'];
+  if(ghost){
+    let last = -1;
+    setInterval(()=>{
+      let i; do{ i=Math.floor(Math.random()*palette.length); }while(i===last);
+      last=i; ghost.style.setProperty('--ghost', palette[i]);
+    }, 600);
+  }
   if(!loader) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ loader.classList.add('hide'); document.body.classList.add('loaded'); return; }
   const min = 3000;
