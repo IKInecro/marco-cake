@@ -1,3 +1,16 @@
+// sound 8 wav — retrogame hamburger, mau ini, batal, error rasa, pilih, terkirim, keranjang, tambahKurang
+const sounds = {
+  retrogame: new Audio('asset/sound/retrogame.wav'),
+  mauIni: new Audio('asset/sound/mau ini.wav'),
+  batal: new Audio('asset/sound/batal.wav'),
+  error: new Audio('asset/sound/error_belum_isi_rasa.wav'),
+  pilih: new Audio('asset/sound/pilih_pilih_rasaatautoping.wav'),
+  terkirim: new Audio('asset/sound/pesanan terkirim.wav'),
+  keranjang: new Audio('asset/sound/tombol keranjang.wav'),
+  tambahKurang: new Audio('asset/sound/tambah kurang barang di keranjang.wav')
+};
+Object.values(sounds).forEach(a=>{ a.preload='auto'; a.volume=0.6; });
+function playSound(k){ const a=sounds[k]; if(!a) return; a.currentTime=0; a.play().catch(()=>{}); }
 // loader 3s + ghost 5 warna random
 (function(){
   const loader = document.getElementById('loader');
@@ -142,6 +155,7 @@ const btnHam = document.getElementById("brutalHamburger");
 const navMenu = document.getElementById("brutalNavMenu");
 if(btnHam && navMenu){
   btnHam.addEventListener("click", ()=>{
+    playSound('retrogame');
     const exp = btnHam.getAttribute("aria-expanded")==="true";
     btnHam.setAttribute("aria-expanded", String(!exp));
     navMenu.classList.toggle("hidden", exp);
@@ -279,21 +293,24 @@ function clearVariantError(){
   if(box) box.classList.remove('shake');
 }
 function showVariantError(msg){
+  playSound('error');
   const el=document.getElementById('variantError');
   const box=document.getElementById('variantBox');
   if(el){ el.textContent=msg; el.classList.add('show'); }
   if(box){ box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); setTimeout(()=>box.classList.remove('shake'),400); }
   if(navigator.vibrate) navigator.vibrate([80,40,80]);
 }
-window.selectRasa = (r)=>{ variantSelectedRasa=r; clearVariantError(); renderVariantChoices(); };
+window.selectRasa = (r)=>{ playSound('pilih'); variantSelectedRasa=r; clearVariantError(); renderVariantChoices(); };
 window.selectTopping = (t)=>{
+  playSound('pilih');
   if(variantSelectedToppings.includes(t)) variantSelectedToppings = variantSelectedToppings.filter(x=>x!==t);
   else variantSelectedToppings.push(t);
   clearVariantError(); renderVariantChoices();
 };
-window.toggleMix = ()=>{ variantMix = !variantMix; clearVariantError(); renderVariantChoices(); };
+window.toggleMix = ()=>{ playSound('pilih'); variantMix = !variantMix; clearVariantError(); renderVariantChoices(); };
 
 window.openVariant = (id)=>{
+  playSound('mauIni');
   const m = menuMap.get(id);
   if(!m) return;
   variantSelectedId = id;
@@ -309,7 +326,8 @@ window.openVariant = (id)=>{
   if(navMenu) navMenu.classList.add("hidden");
   if(elVariantModal){ elVariantModal.classList.remove("hidden"); elVariantModal.classList.add("visible"); }
 };
-window.closeVariant = ()=>{
+window.closeVariant = (silent)=>{
+  if(!silent) playSound('batal');
   if(elVariantModal){ elVariantModal.classList.add("hidden"); elVariantModal.classList.remove("visible"); }
   clearVariantError();
   variantSelectedId=null; variantSelectedRasa=""; variantSelectedToppings=[]; variantMix=false;
@@ -319,6 +337,7 @@ window.confirmVariant = ()=>{
     showVariantError("Pilih rasa dulu — coklat / strawberry / matcha / pandan / vanila");
     return;
   }
+  playSound('mauIni');
   const catatanRaw = elVariantCatatan ? elVariantCatatan.value.trim() : "";
   const toppingBase = variantSelectedToppings.slice().sort().join(", ");
   const toppingStr = variantMix ? (toppingBase ? `${toppingBase} + MIX` : "MIX") : toppingBase;
@@ -328,7 +347,7 @@ window.confirmVariant = ()=>{
   cart.set(key, cur+1);
   variantMeta.set(key, {baseId: variantSelectedId, rasa: variantSelectedRasa, topping: toppingStr, catatan});
   if(catatan) variantMeta.get(key).catatan = catatan;
-  closeVariant();
+  closeVariant(true);
   updateCartUI(true);
 };
 
@@ -338,6 +357,7 @@ if(elVariantModal){
 }
 
 function changeQty(key, delta){
+  playSound('tambahKurang');
   const cur = cart.get(key) || 0;
   const next = cur + delta;
   if(next <= 0){ cart.delete(key); variantMeta.delete(key); }
@@ -420,34 +440,41 @@ function updateCartUI(bump=false){
 window.changeQty = changeQty;
 window.openDrawer = ()=>{
   if(cart.size===0) return;
+  playSound('keranjang');
   elDrawer.classList.remove("closed"); elDrawer.classList.add("open");
   elOverlay.classList.remove("hidden"); elOverlay.classList.add("visible");
 };
-window.closeDrawer = ()=>{
+window.closeDrawer = (silent)=>{
+  if(!silent) playSound('batal');
   elDrawer.classList.add("closed"); elDrawer.classList.remove("open");
   elOverlay.classList.add("hidden"); elOverlay.classList.remove("visible");
 };
 window.openCheckout = ()=>{
   if(cart.size===0) return;
-  closeDrawer();
+  playSound('mauIni');
+  closeDrawer(true);
   elCheckoutModal.classList.remove("hidden"); elCheckoutModal.classList.add("visible");
 };
-window.closeCheckout = ()=>{ elCheckoutModal.classList.add("hidden"); elCheckoutModal.classList.remove("visible"); };
-window.closeSuccess = ()=>{ elSuccessModal.classList.add("hidden"); elSuccessModal.classList.remove("visible"); };
+window.closeCheckout = ()=>{ playSound('batal'); elCheckoutModal.classList.add("hidden"); elCheckoutModal.classList.remove("visible"); };
+window.closeSuccess = ()=>{ playSound('batal'); elSuccessModal.classList.add("hidden"); elSuccessModal.classList.remove("visible"); };
 window.openContact = ()=>{
+  playSound('retrogame');
   if(btnHam) btnHam.setAttribute("aria-expanded","false");
   if(navMenu) navMenu.classList.add("hidden");
   if(elContactModal){ elContactModal.classList.remove("hidden"); elContactModal.classList.add("visible"); }
 };
 window.closeContact = ()=>{
+  playSound('batal');
   if(elContactModal){ elContactModal.classList.add("hidden"); elContactModal.classList.remove("visible"); }
 };
 window.openRequest = ()=>{
+  playSound('retrogame');
   if(btnHam) btnHam.setAttribute("aria-expanded","false");
   if(navMenu) navMenu.classList.add("hidden");
   if(elRequestModal){ elRequestModal.classList.remove("hidden"); elRequestModal.classList.add("visible"); }
 };
 window.closeRequest = ()=>{
+  playSound('batal');
   if(elRequestModal){ elRequestModal.classList.add("hidden"); elRequestModal.classList.remove("visible"); }
 };
 if(elContactModal){
@@ -484,6 +511,7 @@ if(elCheckoutForm){
       cart.clear(); variantMeta.clear(); updateCartUI(); closeCheckout(); elCheckoutForm.reset();
       document.getElementById("successText").textContent = `Pesanan ${payload.items.join(", ")} - ${rupiah(total)} atas nama ${nama} (${kategori}) terkirim.`;
       elSuccessModal.classList.remove("hidden"); elSuccessModal.classList.add("visible");
+      playSound('terkirim');
     }catch(err){ alert("Gagal kirim: " + err.message); }
     finally{ btn.textContent = prev; btn.disabled = false; }
   });
