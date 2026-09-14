@@ -361,6 +361,45 @@
     </div>
   </div>
 
+  <div id="confirmModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
+    <div class="modal-box neo-card bg-white w-full max-w-md p-0 overflow-hidden max-h-[90vh] flex flex-col">
+      <div class="bg-neo-orange p-4 text-center border-b-[3px] border-gray-950">
+        <p class="font-mono text-xs font-bold tracking-[0.2em] text-white">CEK LAGI PESANAN</p>
+        <h3 class="font-oswald font-bold text-xl uppercase mt-1 text-white">Yakin sudah benar?</h3>
+      </div>
+      <div class="p-4 space-y-3 overflow-auto">
+        <div class="bg-white border-[3px] border-gray-950 p-3">
+          <p class="font-mono text-[11px] font-bold">PESANAN</p>
+          <div id="confirmItems" class="font-mono text-xs mt-1 space-y-1"></div>
+          <div class="flex justify-between font-mono font-bold text-sm mt-2 pt-2 border-t-2 border-gray-950">
+            <span>TOTAL</span><span id="confirmTotal"></span>
+          </div>
+        </div>
+        <div class="bg-gray-950 text-white p-3 border-[3px] border-gray-950">
+          <p class="font-mono text-[11px] opacity-70">PEMBELI</p>
+          <p id="confirmNama" class="font-mono font-bold text-sm"></p>
+          <p id="confirmKategori" class="font-mono text-xs opacity-80"></p>
+          <p id="confirmWa" class="font-mono text-xs mt-1 opacity-70"></p>
+        </div>
+        <div id="confirmCatatanWrap" class="hidden bg-neo-yellow border-[3px] border-gray-950 p-3">
+          <p class="font-mono text-[11px] font-bold">CATATAN</p>
+          <p id="confirmCatatan" class="font-mono text-xs mt-1"></p>
+        </div>
+        <div class="bg-white border-[3px] border-gray-950 p-3 flex items-center justify-between">
+          <div>
+            <p class="font-mono text-[11px] font-bold">AMBIL DI</p>
+            <p class="font-oswald font-bold text-sm uppercase">Lobby MNC University</p>
+          </div>
+          <span class="bg-neo-orange text-white font-mono text-[11px] font-bold px-2 py-1 border-2 border-gray-950">CEK DULU</span>
+        </div>
+      </div>
+      <div class="p-4 pt-0 flex gap-3 bg-white border-t-[3px] border-gray-950">
+        <button onclick="closeConfirm()" class="neo-btn bg-white font-mono font-bold text-sm flex-1 py-3">UBAH LAGI</button>
+        <button onclick="confirmSend()" class="neo-btn bg-neo-orange text-white font-mono font-bold text-sm flex-1 py-3">YAKIN KIRIM</button>
+      </div>
+    </div>
+  </div>
+
   <div id="successModal" class="modal hidden fixed inset-0 bg-black/50 z-[60] items-center justify-center p-4">
     <div id="successBox" class="modal-box neo-card bg-white w-full max-w-md p-0 overflow-hidden">
       <div id="orderLoader" class="p-8 flex flex-col items-center justify-center bg-[#FAFAFA]">
@@ -474,6 +513,21 @@
       vm.dataset.bound = '1';
       vm.addEventListener('click', function(e){ if(e.target===vm) window.closeVariant(); });
       document.addEventListener('keydown', function(e){ if(e.key==='Escape') window.closeVariant(); });
+    }
+    if (typeof window.closeConfirm !== 'function') {
+      window.closeConfirm = function(){
+        var c = document.getElementById('confirmModal');
+        var ch = document.getElementById('checkoutModal');
+        if (c) { c.classList.add('hidden'); c.classList.remove('visible'); }
+        if (ch) { ch.classList.remove('hidden'); ch.classList.add('visible'); }
+      };
+      window.confirmSend = function(){ var c=document.getElementById('confirmModal'); if(c){c.classList.add('hidden');c.classList.remove('visible');} };
+    }
+    var cf = document.getElementById('confirmModal');
+    if (cf && !cf.dataset.bound) {
+      cf.dataset.bound = '1';
+      cf.addEventListener('click', function(e){ if(e.target===cf) window.closeConfirm(); });
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape') window.closeConfirm(); });
     }
   </script>
 </body>

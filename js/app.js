@@ -186,10 +186,13 @@ const elOverlay = document.getElementById("drawerOverlay");
 const elDrawerList = document.getElementById("drawerList");
 const elDrawerTotal = document.getElementById("drawerTotal");
 const elCheckoutModal = document.getElementById("checkoutModal");
+const elConfirmModal = document.getElementById("confirmModal");
 const elSuccessModal = document.getElementById("successModal");
 const elContactModal = document.getElementById("contactModal");
 const elRequestModal = document.getElementById("requestModal");
 const elCheckoutForm = document.getElementById("checkoutForm");
+let pendingPayload = null;
+let pendingItems = [];
 const elHeader = document.getElementById("brutalStickyNav");
 const elVariantModal = document.getElementById("variantModal");
 const elVariantProduct = document.getElementById("variantProduct");
@@ -561,7 +564,57 @@ window.openCheckout = ()=>{
   elCheckoutModal.classList.remove("hidden"); elCheckoutModal.classList.add("visible");
 };
 window.closeCheckout = ()=>{ playSound('batal'); elCheckoutModal.classList.add("hidden"); elCheckoutModal.classList.remove("visible"); };
+window.closeConfirm = ()=>{
+  playSound('batal');
+  if(elConfirmModal){ elConfirmModal.classList.add("hidden"); elConfirmModal.classList.remove("visible"); }
+  // balik ke form checkout biar bisa ubah
+  if(elCheckoutModal){ elCheckoutModal.classList.remove("hidden"); elCheckoutModal.classList.add("visible"); }
+};
 window.closeSuccess = ()=>{ playSound('batal'); elSuccessModal.classList.add("hidden"); elSuccessModal.classList.remove("visible"); };
+window.confirmSend = async ()=>{
+  if(!pendingPayload || !pendingItems.length) return;
+  const btn = elConfirmModal ? elConfirmModal.querySelector('button[onclick="confirmSend()"]') : null;
+  const prev = btn ? btn.textContent : "";
+  if(btn){ btn.textContent = "MENGIRIM..."; btn.disabled = true; }
+  const {nama,wa,kategori,catatan,total} = pendingPayload;
+  const items = pendingItems;
+  try{
+    if(GAS_URL){
+      await fetch(GAS_URL, { method:"POST", mode:"no-cors", body: JSON.stringify(pendingPayload) });
+    }
+    const allOrders = JSON.parse(localStorage.getItem("web-jualan-orders")||"[]");
+    allOrders.push(pendingPayload);
+    localStorage.setItem("web-jualan-orders", JSON.stringify(allOrders));
+    cart.clear(); variantMeta.clear(); updateCartUI();
+    if(elConfirmModal){ elConfirmModal.classList.add("hidden"); elConfirmModal.classList.remove("visible"); }
+    elCheckoutForm.reset();
+    // show loader then morph to detail card (reuse success flow)
+    const loaderEl = document.getElementById('orderLoader');
+    const detailEl = document.getElementById('orderDetail');
+    loaderEl.classList.remove('morph-out'); detailEl.classList.add('hidden'); detailEl.classList.remove('morph-in');
+    elSuccessModal.classList.remove("hidden"); elSuccessModal.classList.add("visible");
+    loaderEl.style.display = 'flex';
+    detailEl.classList.add('hidden');
+    document.getElementById('detailNama').textContent = nama;
+    document.getElementById('detailWa').textContent = wa;
+    document.getElementById('detailKategori').textContent = kategori;
+    document.getElementById('detailItems').innerHTML = items.map(i=> `<div class="flex justify-between"><span>${i.label} × ${i.qty}</span><span>${rupiah(i.harga * i.qty)}</span></div>`).join('');
+    document.getElementById('detailTotal').textContent = rupiah(total);
+    const catWrap = document.getElementById('detailCatatanWrap');
+    if(catatan){ document.getElementById('detailCatatan').textContent = catatan; catWrap.classList.remove('hidden'); } else catWrap.classList.add('hidden');
+    pendingPayload = null; pendingItems = [];
+    setTimeout(()=>{
+      loaderEl.classList.add('morph-out');
+      setTimeout(()=>{
+        loaderEl.style.display = 'none';
+        detailEl.classList.remove('hidden');
+        detailEl.classList.add('morph-in');
+        playSound('terkirim');
+      }, 400);
+    }, 2200);
+  }catch(err){ alert("Gagal kirim: " + err.message); }
+  finally{ if(btn){ btn.textContent = prev || "YAKIN KIRIM"; btn.disabled = false; } }
+};
 window.openContact = ()=>{
   playSound('retrogame');
   if(btnHam) btnHam.setAttribute("aria-expanded","false");
@@ -592,7 +645,7 @@ if(elRequestModal){
 }
 
 if(elCheckoutForm){
-  elCheckoutForm.addEventListener("submit", async (e)=>{
+  elCheckoutForm.addEventListener("submit", (e)=>{
     e.preventDefault();
     const fd = new FormData(elCheckoutForm);
     const nama = fd.get("nama").trim();
@@ -604,44 +657,24 @@ if(elCheckoutForm){
     if(items.length===0) return;
     const total = cartTotal(items);
     const payload = { nama, wa, kategori, catatan, metode, items: items.map(i=> `${i.label} x${i.qty}`), total, waktu: new Date().toISOString() };
-    const btn = elCheckoutForm.querySelector('button[type="submit"]');
-    const prev = btn.textContent; btn.textContent = "MENGIRIM..."; btn.disabled = true;
-    try{
-      if(GAS_URL){
-        await fetch(GAS_URL, { method:"POST", mode:"no-cors", body: JSON.stringify(payload) });
-      }
-      const allOrders = JSON.parse(localStorage.getItem("web-jualan-orders")||"[]");
-      allOrders.push(payload);
-      localStorage.setItem("web-jualan-orders", JSON.stringify(allOrders));
-      cart.clear(); variantMeta.clear(); updateCartUI(); closeCheckout(); elCheckoutForm.reset();
-      // show loader then morph to detail card
-      const loaderEl = document.getElementById('orderLoader');
-      const detailEl = document.getElementById('orderDetail');
-      loaderEl.classList.remove('morph-out'); detailEl.classList.add('hidden'); detailEl.classList.remove('morph-in');
-      elSuccessModal.classList.remove("hidden"); elSuccessModal.classList.add("visible");
-      loaderEl.style.display = 'flex';
-      detailEl.classList.add('hidden');
-      // populate detail
-      document.getElementById('detailNama').textContent = nama;
-      document.getElementById('detailWa').textContent = wa;
-      document.getElementById('detailKategori').textContent = kategori;
-      document.getElementById('detailItems').innerHTML = items.map(i=> `<div class="flex justify-between"><span>${i.label} × ${i.qty}</span><span>${rupiah(i.harga * i.qty)}</span></div>`).join('');
-      document.getElementById('detailTotal').textContent = rupiah(total);
-      const catWrap = document.getElementById('detailCatatanWrap');
-      if(catatan){ document.getElementById('detailCatatan').textContent = catatan; catWrap.classList.remove('hidden'); } else catWrap.classList.add('hidden');
-      // morph after 2.2s
-      setTimeout(()=>{
-        loaderEl.classList.add('morph-out');
-        setTimeout(()=>{
-          loaderEl.style.display = 'none';
-          detailEl.classList.remove('hidden');
-          detailEl.classList.add('morph-in');
-          playSound('terkirim');
-        }, 400);
-      }, 2200);
-    }catch(err){ alert("Gagal kirim: " + err.message); }
-    finally{ btn.textContent = prev; btn.disabled = false; }
+    pendingPayload = payload;
+    pendingItems = items;
+    // populate confirm orange
+    document.getElementById('confirmItems').innerHTML = items.map(i=> `<div class="flex justify-between"><span>${i.label} × ${i.qty}</span><span>${rupiah(i.harga * i.qty)}</span></div>`).join('');
+    document.getElementById('confirmTotal').textContent = rupiah(total);
+    document.getElementById('confirmNama').textContent = nama;
+    document.getElementById('confirmWa').textContent = wa;
+    document.getElementById('confirmKategori').textContent = kategori;
+    const cWrap = document.getElementById('confirmCatatanWrap');
+    if(catatan){ document.getElementById('confirmCatatan').textContent = catatan; cWrap.classList.remove('hidden'); } else cWrap.classList.add('hidden');
+    playSound('mauIni');
+    elCheckoutModal.classList.add("hidden"); elCheckoutModal.classList.remove("visible");
+    if(elConfirmModal){ elConfirmModal.classList.remove("hidden"); elConfirmModal.classList.add("visible"); }
   });
+}
+if(elConfirmModal){
+  elConfirmModal.addEventListener("click", (e)=>{ if(e.target===elConfirmModal) window.closeConfirm(); });
+  document.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && elConfirmModal.classList.contains("visible")) window.closeConfirm(); });
 }
 try{
   const saved = JSON.parse(localStorage.getItem("web-jualan-cart")||"[]");
