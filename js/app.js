@@ -11,6 +11,38 @@ const sounds = {
 };
 Object.values(sounds).forEach(a=>{ a.preload='auto'; a.volume=0.6; });
 function playSound(k){ const a=sounds[k]; if(!a) return; a.currentTime=0; a.play().catch(()=>{}); }
+// BGM 50% + mute toggle di hamburger
+const bgm = document.getElementById('bgm');
+let bgmOn = localStorage.getItem('marco-bgm') !== 'off';
+function updateBgmBtn(){
+  const btn = document.getElementById('bgmToggle');
+  if(!btn) return;
+  btn.textContent = bgmOn ? 'BGM ON' : 'BGM OFF';
+  btn.className = bgmOn ? 'neo-btn bg-neo-green text-white px-4 py-2.5 text-center' : 'neo-btn bg-neo-pink text-white px-4 py-2.5 text-center';
+}
+function toggleBgm(){
+  bgmOn = !bgmOn;
+  localStorage.setItem('marco-bgm', bgmOn ? 'on' : 'off');
+  updateBgmBtn();
+  if(!bgm) return;
+  if(bgmOn){ bgm.volume=0.5; bgm.play().catch(()=>{}); }
+  else bgm.pause();
+}
+window.toggleBgm = toggleBgm;
+if(bgm){
+  bgm.volume = 0.5;
+  bgm.loop = true;
+  updateBgmBtn();
+  if(!bgmOn) bgm.pause();
+  else {
+    // autoplay after loader (3s) + first click fallback
+    const tryPlay = ()=> { if(bgmOn) bgm.play().catch(()=>{}); };
+    // will be called from loader done
+    bgm._tryPlay = tryPlay;
+    const once = ()=>{ if(bgmOn && bgm.paused) bgm.play().catch(()=>{}); document.removeEventListener('click', once); };
+    document.addEventListener('click', once, {once:true});
+  }
+}
 // loader 3s + ghost 5 warna random
 (function(){
   const loader = document.getElementById('loader');
@@ -33,8 +65,10 @@ function playSound(k){ const a=sounds[k]; if(!a) return; a.currentTime=0; a.play
     setTimeout(()=>{
       loader.classList.add('hide');
       document.body.classList.add('loaded');
-      // pindah ghost ke landing background biar jalan-jalan
+      // pindah ghost ke landing + auto BGM abis loading
       setTimeout(()=>{
+        const bgmEl = document.getElementById('bgm');
+        if(bgmEl && localStorage.getItem('marco-bgm') !== 'off'){ bgmEl.volume=0.5; bgmEl.play().catch(()=>{}); }
         const ghostEl = document.getElementById('ghost');
         const home = document.getElementById('home');
         if(ghostEl && home){
@@ -107,9 +141,9 @@ function playSound(k){ const a=sounds[k]; if(!a) return; a.currentTime=0; a.play
 })();
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwTNe5gMxd6XgXLpVpCmupC9CfnqwjTao5vhPgpUS47HS7j_d4j9gyOwbRX2xQbzXNt/exec";
 const menuFallback = [
-  {"id":"brw250","nama":"Brownies 250ml","harga":20000,"desc":"Cup 250ml — 1 cup","foto":"asset/brownies/5.webp","fotos":["asset/brownies/5.webp","asset/brownies/6.webp"]},
-  {"id":"brw500","nama":"Brownies 500ml","harga":35000,"desc":"Cup 500ml — 1 cup","foto":"asset/brownies/7.webp","fotos":["asset/brownies/7.webp","asset/brownies/8.webp"]},
-  {"id":"bolu7x22","nama":"Bolu 7×22 cm","harga":50000,"desc":"Loyang 7×22 cm","foto":"asset/bolu/2.webp","fotos":["asset/bolu/2.webp","asset/bolu/3.webp","asset/bolu/4.webp","asset/bolu/9.webp"]}
+  {"id":"brw250","nama":"Brownies 250ml","harga":20000,"desc":"Cup 250ml — 1 cup","foto":"asset/brownies/brownies-new1.webp","fotos":["asset/brownies/brownies-new1.webp"]},
+  {"id":"brw500","nama":"Brownies 500ml","harga":35000,"desc":"Cup 500ml — 1 cup","foto":"asset/brownies/brownies-new2.webp","fotos":["asset/brownies/brownies-new2.webp"]},
+  {"id":"bolu7x22","nama":"Bolu 7×22 cm","harga":50000,"desc":"Loyang 7×22 cm","foto":"asset/bolu/bolu-new1.webp","fotos":["asset/bolu/bolu-new1.webp"]}
 ];
 let menuMap = new Map();
 let cart = new Map(); // key composite -> qty
