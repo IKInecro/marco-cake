@@ -139,17 +139,16 @@ if(bgm){
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
-// floating cake/love idle — floating base + glitch/tilt/pop random 5s beda
+// floating cake/love idle — floating base + glitch/tilt/pop random 5s beda (include mobile cake3)
 (function(){
-  const cake = document.getElementById('heroShape1');
-  const love = document.getElementById('heroShape2');
-  if(!cake && !love) return;
+  const els = [document.getElementById('heroShape1'), document.getElementById('heroShape2'), document.getElementById('heroShape3')].filter(Boolean);
+  if(!els.length) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const anims = ['flt-glitch','flt-tilt','flt-pop'];
   function idle(el, baseDelay){
     let last='';
     function tick(){
-      const delay = 4800 + Math.random()*2200; // 4.8-7s random beda
+      const delay = 4800 + Math.random()*2200;
       setTimeout(()=>{
         let a; do{ a=anims[Math.floor(Math.random()*anims.length)]; }while(a===last);
         last=a;
@@ -162,8 +161,7 @@ if(bgm){
     }
     setTimeout(tick, baseDelay + Math.random()*1000);
   }
-  if(cake) idle(cake, 2200);
-  if(love) idle(love, 3800);
+  els.forEach((el,i)=> idle(el, 2200 + i*1200));
 })();
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwTNe5gMxd6XgXLpVpCmupC9CfnqwjTao5vhPgpUS47HS7j_d4j9gyOwbRX2xQbzXNt/exec";
 const menuFallback = [
