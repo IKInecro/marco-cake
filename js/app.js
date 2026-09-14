@@ -139,6 +139,32 @@ if(bgm){
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
+// floating cake/love idle — floating base + glitch/tilt/pop random 5s beda
+(function(){
+  const cake = document.getElementById('heroShape1');
+  const love = document.getElementById('heroShape2');
+  if(!cake && !love) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const anims = ['flt-glitch','flt-tilt','flt-pop'];
+  function idle(el, baseDelay){
+    let last='';
+    function tick(){
+      const delay = 4800 + Math.random()*2200; // 4.8-7s random beda
+      setTimeout(()=>{
+        let a; do{ a=anims[Math.floor(Math.random()*anims.length)]; }while(a===last);
+        last=a;
+        el.classList.remove('flt-glitch','flt-tilt','flt-pop');
+        void el.offsetWidth;
+        el.classList.add(a);
+        setTimeout(()=> el.classList.remove(a), 400);
+        tick();
+      }, delay);
+    }
+    setTimeout(tick, baseDelay + Math.random()*1000);
+  }
+  if(cake) idle(cake, 2200);
+  if(love) idle(love, 3800);
+})();
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwTNe5gMxd6XgXLpVpCmupC9CfnqwjTao5vhPgpUS47HS7j_d4j9gyOwbRX2xQbzXNt/exec";
 const menuFallback = [
   {"id":"brw250","nama":"Brownies 250ml","harga":20000,"desc":"Cup 250ml — 1 cup","foto":"asset/brownies/brownies-new1.webp","fotos":["asset/brownies/brownies-new1.webp"]},
