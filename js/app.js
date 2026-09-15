@@ -165,9 +165,9 @@ if(bgm){
 })();
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwTNe5gMxd6XgXLpVpCmupC9CfnqwjTao5vhPgpUS47HS7j_d4j9gyOwbRX2xQbzXNt/exec";
 const menuFallback = [
-  {"id":"brw250","nama":"Brownies 250ml","harga":20000,"desc":"Cup 250ml — 1 cup","foto":"asset/brownies/brownies-new1.webp","fotos":["asset/brownies/brownies-new1.webp"]},
-  {"id":"brw500","nama":"Brownies 500ml","harga":35000,"desc":"Cup 500ml — 1 cup","foto":"asset/brownies/brownies-new2.webp","fotos":["asset/brownies/brownies-new2.webp"]},
-  {"id":"bolu7x22","nama":"Bolu 7×22 cm","harga":50000,"desc":"Loyang 7×22 cm","foto":"asset/bolu/bolu-new1.webp","fotos":["asset/bolu/bolu-new1.webp"]}
+  {"id":"brw250","nama":"Brownies 250ml","harga":15000,"desc":"Cup 250ml — 1 cup","foto":"asset/brownies/brownies-new1.webp","fotos":["asset/brownies/brownies-new1.webp"]},
+  {"id":"brw500","nama":"Brownies 500ml","harga":30000,"desc":"Cup 500ml — 1 cup","foto":"asset/brownies/brownies-new2.webp","fotos":["asset/brownies/brownies-new2.webp"]},
+  {"id":"bolu7x22","nama":"Bolu 7×22 cm","harga":45000,"desc":"Loyang 7×22 cm","foto":"asset/bolu/bolu-new1.webp","fotos":["asset/bolu/bolu-new1.webp"]}
 ];
 let menuMap = new Map();
 let cart = new Map(); // key composite -> qty
