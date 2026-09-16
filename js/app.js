@@ -348,27 +348,39 @@ function renderVariantChoices(){
     const cls = rasaColorClass(r, isSel);
     return `<button onclick="selectRasa('${r}')" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${cls}" style="border-radius:14px;">${r}</button>`;
   }).join("");
-  elVariantToppingWrap.classList.remove("hidden");
-  const topOpts = getToppingOptions(variantSelectedId);
-  let html = topOpts.map(t=>{
-    const isSel = variantSelectedToppings.includes(t);
-    const cls = toppingColorClass(t, isSel);
-    return `<button onclick="selectTopping('${t}')" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${cls}" style="border-radius:14px;">${t}</button>`;
-  }).join("");
-  const isMixSel = variantMix;
-  const mixCls = isMixSel ? "variant-topping-mix border-gray-950 shadow-[3px_3px_0px_#111] text-white" : "bg-white text-gray-900";
-  html += `<button onclick="toggleMix()" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${mixCls}" style="border-radius:14px;">MIX</button>`;
-  elVariantTopping.innerHTML = html;
-  // preview pilihan — MIX = rasa + MIX doang, gak list semua
+  const isBolu = variantSelectedId === "bolu7x22";
+  if(!isBolu){
+    elVariantToppingWrap.classList.add("hidden");
+    elVariantTopping.innerHTML = "";
+    variantSelectedToppings = [];
+    variantMix = false;
+  } else {
+    elVariantToppingWrap.classList.remove("hidden");
+    const topOpts = getToppingOptions(variantSelectedId);
+    let html = topOpts.map(t=>{
+      const isSel = variantSelectedToppings.includes(t);
+      const cls = toppingColorClass(t, isSel);
+      return `<button onclick="selectTopping('${t}')" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${cls}" style="border-radius:14px;">${t}</button>`;
+    }).join("");
+    const isMixSel = variantMix;
+    const mixCls = isMixSel ? "variant-topping-mix border-gray-950 shadow-[3px_3px_0px_#111] text-white" : "bg-white text-gray-900";
+    html += `<button onclick="toggleMix()" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${mixCls}" style="border-radius:14px;">MIX</button>`;
+    elVariantTopping.innerHTML = html;
+  }
   const preview = document.getElementById('variantPreview');
   const previewText = document.getElementById('variantPreviewText');
   if(preview && previewText){
-    if(variantSelectedRasa || variantSelectedToppings.length || variantMix){
-      const rasa = variantSelectedRasa || '—';
-      const top = variantMix ? 'MIX' : (variantSelectedToppings.length ? variantSelectedToppings.join(', ') : '—');
-      previewText.textContent = `${rasa} + ${top}`;
-      preview.classList.remove('hidden');
-    } else preview.classList.add('hidden');
+    if(isBolu){
+      if(variantSelectedRasa || variantSelectedToppings.length || variantMix){
+        const rasa = variantSelectedRasa || '—';
+        const top = variantMix ? 'MIX' : (variantSelectedToppings.length ? variantSelectedToppings.join(', ') : '—');
+        previewText.textContent = `${rasa} + ${top}`;
+        preview.classList.remove('hidden');
+      } else preview.classList.add('hidden');
+    } else {
+      if(variantSelectedRasa){ previewText.textContent = variantSelectedRasa; preview.classList.remove('hidden'); }
+      else preview.classList.add('hidden');
+    }
   }
 }
 function clearVariantError(){
@@ -429,7 +441,7 @@ window.openVariant = (id)=>{
   clearVariantError();
   if(elVariantCatatan) elVariantCatatan.value="";
   if(elVariantProduct) elVariantProduct.textContent = `${m.nama} — ${rupiah(m.harga)}`;
-  if(elVariantTitle) elVariantTitle.textContent = "PILIH RASA & TOPPING";
+  if(elVariantTitle) elVariantTitle.textContent = variantSelectedId === "bolu7x22" ? "PILIH RASA & TOPPING" : "PILIH RASA";
   renderVariantChoices();
   if(btnHam) btnHam.setAttribute("aria-expanded","false");
   if(navMenu) navMenu.classList.add("hidden");
@@ -447,10 +459,11 @@ window.confirmVariant = ()=>{
     return;
   }
   playSound('mauIni');
+  const isBoluConfirm = variantSelectedId === "bolu7x22";
   const catatanRaw = elVariantCatatan ? elVariantCatatan.value.trim() : "";
-  const toppingStr = variantMix ? "MIX" : variantSelectedToppings.slice().sort().join(", ");
-  const catatan = variantMix ? (catatanRaw ? `MIX - ${catatanRaw}` : "MIX - campur sesuai stok topping") : catatanRaw;
-  const key = variantKey(variantSelectedId, variantSelectedRasa, variantMix ? [] : variantSelectedToppings, variantMix);
+  const toppingStr = !isBoluConfirm ? "" : variantMix ? "MIX" : variantSelectedToppings.slice().sort().join(", ");
+  const catatan = isBoluConfirm && variantMix ? (catatanRaw ? `MIX - ${catatanRaw}` : "MIX - campur sesuai stok topping") : catatanRaw;
+  const key = variantKey(variantSelectedId, variantSelectedRasa, isBoluConfirm ? (variantMix ? [] : variantSelectedToppings) : [], isBoluConfirm && variantMix);
   const cur = cart.get(key) || 0;
   cart.set(key, cur+1);
   variantMeta.set(key, {baseId: variantSelectedId, rasa: variantSelectedRasa, topping: toppingStr, catatan});
