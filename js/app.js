@@ -329,6 +329,9 @@ function getToppingOptions(baseId){
   if(baseId==="bolu7x22") return ["meses warna","meses coklat","keju"];
   return ["oreo","meses warna","meses coklat","keju"];
 }
+// ponytail: hardcode habis brownies strawberry/matcha, pindah ke menu.json `habis:[]` if >20 varian
+const RASA_HABIS_BROWNIES = new Set(["strawberry","matcha"]);
+function isRasaHabis(baseId, rasa){ return (baseId==="brw250"||baseId==="brw500") && RASA_HABIS_BROWNIES.has(rasa); }
 
 function rasaColorClass(r, sel){
   if(!sel) return "bg-white text-gray-900";
@@ -344,6 +347,8 @@ function renderVariantChoices(){
   if(!elVariantRasa || !elVariantTopping) return;
   const rasaOpts = getRasaOptions(variantSelectedId);
   elVariantRasa.innerHTML = rasaOpts.map(r=>{
+    const habis = isRasaHabis(variantSelectedId, r);
+    if(habis) return `<button disabled aria-disabled="true" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 bg-white text-gray-400 opacity-60 cursor-not-allowed relative overflow-hidden" style="border-radius:14px; box-shadow:none; transform:none;"><span class="block">${r}</span><span class="block text-[10px] leading-none mt-1 bg-gray-950 text-white px-1.5 py-0.5 rounded-full inline-block">STOCK HABIS</span></button>`;
     const isSel = r===variantSelectedRasa;
     const cls = rasaColorClass(r, isSel);
     return `<button onclick="selectRasa('${r}')" class="variant-card neo-btn font-mono text-xs font-bold px-4 py-3 ${cls}" style="border-radius:14px;">${r}</button>`;
@@ -397,7 +402,7 @@ function showVariantError(msg){
   if(box){ box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); setTimeout(()=>box.classList.remove('shake'),400); }
   if(navigator.vibrate) navigator.vibrate([80,40,80]);
 }
-window.selectRasa = (r)=>{ playSound('pilih'); variantSelectedRasa=r; clearVariantError(); renderVariantChoices(); };
+window.selectRasa = (r)=>{ if(isRasaHabis(variantSelectedId,r)){ showVariantError(r+" — STOCK HABIS"); return; } playSound('pilih'); variantSelectedRasa=r; clearVariantError(); renderVariantChoices(); };
 window.selectTopping = (t)=>{
   playSound('pilih');
   if(variantMix){
@@ -456,6 +461,10 @@ window.closeVariant = (silent)=>{
 window.confirmVariant = ()=>{
   if(!variantSelectedId || !variantSelectedRasa){
     showVariantError("Pilih rasa dulu — coklat / strawberry / matcha / pandan / vanila");
+    return;
+  }
+  if(isRasaHabis(variantSelectedId, variantSelectedRasa)){
+    showVariantError(variantSelectedRasa+" — STOCK HABIS");
     return;
   }
   playSound('mauIni');
